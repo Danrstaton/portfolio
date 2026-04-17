@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CVS Notifications: Email, SMS, Push — Dan Staton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #F7F4EF;
+      --bg-warm:     #EFE9E0;
+      --white:       #FFFFFF;
+      --text:        #1A1614;
+      --text-mid:    #6B6460;
+      --text-light:  #9C9490;
+      --accent:      #C4673A;
+      --accent-hover:#A8542F;
+      --accent-mid:  #E8956E;
+      --border:      #E0D9D0;
+      --radius:      16px;
+      --radius-sm:   12px;
+      /* Content widths */
+      --col-read:    680px;
+      --col-wide:    960px;
+      --col-full:    1200px;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; overflow-x:hidden; }
+
+    /* ─── NAV ─────────────────────────────────────── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      padding:20px 48px;
+      display:flex; justify-content:space-between; align-items:center;
+      background:rgba(247,244,239,0.75);
+      backdrop-filter:blur(24px) saturate(160%);
+      -webkit-backdrop-filter:blur(24px) saturate(160%);
+      border-bottom:1px solid rgba(255,255,255,0.88);
+      box-shadow:0 1px 0 rgba(255,255,255,0.95) inset, 0 4px 24px rgba(0,0,0,0.05);
+    }
+    .nav-logo { font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:18px; color:var(--text); text-decoration:none; letter-spacing:-0.02em; }
+    .nav-links { display:flex; gap:40px; align-items:center; }
+    .nav-links a { font-size:15px; color:var(--text-mid); text-decoration:none; transition:color 0.2s; }
+    .nav-links a:hover { color:var(--text); }
+    .nav-back { display:inline-flex; align-items:center; gap:6px; font-size:14px; color:var(--text-mid); text-decoration:none; transition:color 0.2s; }
+    .nav-back:hover { color:var(--accent); }
+    .nav-cta { background:var(--text) !important; color:var(--bg) !important; padding:9px 20px !important; border-radius:100px; font-size:14px !important; font-weight:500 !important; transition:background 0.2s, transform 0.2s !important; }
+    .nav-cta:hover { background:var(--accent) !important; color:white !important; transform:translateY(-1px); }
+
+    /* ─── HERO ────────────────────────────────────── */
+    .hero-wrap { background:var(--bg); position:relative; overflow:hidden; padding-top:88px; }
+    .blob-1 { position:absolute; width:600px; height:600px; background:radial-gradient(circle, rgba(196,103,58,0.18) 0%, rgba(196,103,58,0.06) 45%, transparent 70%); top:-120px; right:-80px; border-radius:50%; pointer-events:none; }
+    .blob-2 { position:absolute; width:400px; height:400px; background:radial-gradient(circle, rgba(232,149,110,0.14) 0%, rgba(232,149,110,0.04) 50%, transparent 70%); bottom:0; left:-80px; border-radius:50%; pointer-events:none; }
+
+    .hero-inner { position:relative; z-index:1; max-width:var(--col-wide); margin:0 auto; padding:0; }
+    .hero-image { width:100%; overflow:hidden; opacity:0; animation:fadeUp 0.6s ease forwards 0.05s; }
+    .hero-image img { width:100%; display:block; }
+
+    .hero-text { padding:40px 48px 0; }
+    .hero-meta { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; opacity:0; transform:translateY(16px); animation:fadeUp 0.5s ease forwards 0.2s; }
+    .meta-chip { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:5px 12px; border-radius:100px; background:var(--bg-warm); border:1px solid var(--border); color:var(--text-mid); }
+    .meta-chip.accent { background:var(--accent); border-color:var(--accent); color:white; }
+
+    .hero-title { font-family:'Bricolage Grotesque',sans-serif; font-size:clamp(36px,6vw,72px); font-weight:800; letter-spacing:-0.04em; color:var(--text); line-height:1.0; margin-bottom:24px; opacity:0; transform:translateY(20px); animation:fadeUp 0.6s ease forwards 0.3s; }
+    .hero-summary { font-size:18px; color:var(--text-mid); line-height:1.65; max-width:600px; margin-bottom:48px; opacity:0; transform:translateY(16px); animation:fadeUp 0.5s ease forwards 0.4s; }
+
+    /* ─── OUTCOMES STRIP — glass ──────────────────── */
+    .outcomes-strip {
+      background:linear-gradient(155deg,#F3EAE0 0%,#EDE0D2 50%,#F0E8DC 100%);
+      border-bottom:1px solid var(--border);
+    }
+    .outcomes-inner { max-width:var(--col-wide); margin:0 auto; padding:32px 48px; }
+    .outcomes-label { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+    .outcomes-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .outcome-card {
+      background:rgba(255,255,255,0.60);
+      backdrop-filter:blur(20px) saturate(160%);
+      -webkit-backdrop-filter:blur(20px) saturate(160%);
+      border:1px solid rgba(255,255,255,0.88);
+      border-radius:var(--radius-sm); padding:18px 20px;
+      box-shadow:0 1px 0 rgba(255,255,255,0.98) inset, 0 4px 16px rgba(0,0,0,0.05);
+    }
+    .outcome-number { font-family:'Bricolage Grotesque',sans-serif; font-size:28px; font-weight:800; color:var(--text); line-height:1; margin-bottom:5px; }
+    .outcome-label { font-size:12px; color:var(--text-mid); line-height:1.4; }
+
+    /* ─── CONTENT LAYOUT ──────────────────────────── */
+    .cs-body { padding:72px 48px; }
+
+    /* Reading column — centered, narrow */
+    .read { max-width:var(--col-read); margin:0 auto; }
+
+    /* Wide column — for images and callouts */
+    .wide { max-width:var(--col-wide); margin:0 auto; }
+
+    /* Full bleed section */
+    .full { max-width:100%; }
+
+    /* ─── ROLE CARD — glass ───────────────────────── */
+    .role-card {
+      background:rgba(255,255,255,0.62);
+      backdrop-filter:blur(24px) saturate(170%);
+      -webkit-backdrop-filter:blur(24px) saturate(170%);
+      border:1px solid rgba(255,255,255,0.88);
+      border-radius:var(--radius); padding:28px 32px;
+      box-shadow:0 1px 0 rgba(255,255,255,0.98) inset, 0 8px 32px rgba(0,0,0,0.06);
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px;
+      margin-bottom:64px;
+    }
+    .role-section-label { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin-bottom:6px; }
+    .role-title { font-family:'Bricolage Grotesque',sans-serif; font-size:15px; font-weight:700; color:var(--text); margin-bottom:4px; }
+    .role-detail { font-size:13px; color:var(--text-mid); line-height:1.55; }
+
+    /* ─── SECTION STRUCTURE ───────────────────────── */
+    .cs-section { margin-bottom:72px; }
+    .cs-section:last-child { margin-bottom:0; }
+
+    .section-eyebrow { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+    .section-heading { font-family:'Bricolage Grotesque',sans-serif; font-size:clamp(24px,3vw,34px); font-weight:700; letter-spacing:-0.03em; color:var(--text); line-height:1.15; margin-bottom:20px; }
+    .section-subheading { font-family:'Bricolage Grotesque',sans-serif; font-size:20px; font-weight:700; letter-spacing:-0.02em; color:var(--text); line-height:1.2; margin-bottom:14px; margin-top:40px; }
+
+    .cs-p { font-size:16px; color:var(--text-mid); line-height:1.8; margin-bottom:18px; }
+    .cs-p:last-child { margin-bottom:0; }
+
+    .cs-ul { margin:0 0 18px 0; padding-left:20px; }
+    .cs-ul li { font-size:15px; color:var(--text-mid); line-height:1.7; margin-bottom:6px; }
+    .cs-ul li:last-child { margin-bottom:0; }
+
+    /* ─── IMAGES ──────────────────────────────────── */
+    .cs-img-wrap { margin:36px 0; }
+    .cs-img-wrap.wide-pull { max-width:var(--col-wide); margin-left:auto; margin-right:auto; }
+    .cs-img { width:100%; border-radius:var(--radius-sm); display:block; border:1px solid var(--border); }
+    .cs-img.no-border { border:none; }
+    .cs-img-caption { font-size:12px; color:var(--text-light); margin-top:10px; line-height:1.5; }
+
+    .img-row { display:grid; gap:16px; margin:36px 0; }
+    .img-row.cols-2 { grid-template-columns:1fr 1fr; }
+    .img-row.cols-2-narrow { grid-template-columns:1fr 1fr; max-width:800px; }
+    .img-row img { width:100%; border-radius:var(--radius-sm); display:block; border:1px solid var(--border); }
+
+    /* ─── CALLOUT BOXES ───────────────────────────── */
+    .callout {
+      background:rgba(255,255,255,0.60);
+      backdrop-filter:blur(16px) saturate(150%);
+      -webkit-backdrop-filter:blur(16px) saturate(150%);
+      border:1px solid rgba(255,255,255,0.88);
+      border-radius:var(--radius-sm); padding:24px 28px;
+      box-shadow:0 1px 0 rgba(255,255,255,0.98) inset, 0 4px 16px rgba(0,0,0,0.05);
+      margin:28px 0;
+    }
+    .callout-label { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+    .callout-text { font-size:15px; color:var(--text); line-height:1.65; }
+
+    .insight-list { list-style:none; padding:0; margin:0; }
+    .insight-list li { font-size:14px; color:var(--text-mid); line-height:1.65; padding:10px 0; border-bottom:1px solid var(--border); display:flex; gap:10px; align-items:flex-start; }
+    .insight-list li:last-child { border-bottom:none; padding-bottom:0; }
+    .insight-list li::before { content:'→'; color:var(--accent); font-size:13px; flex-shrink:0; margin-top:2px; }
+
+    /* ─── DIVIDER ─────────────────────────────────── */
+    .cs-divider { border:none; border-top:1px solid var(--border); margin:64px 0; }
+
+    /* ─── PRESENT DAY BAND ────────────────────────── */
+    .present-band { background:var(--text); margin:0 -48px; padding:72px 48px; }
+    .present-inner { max-width:var(--col-read); margin:0 auto; }
+    .present-eyebrow { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent-mid); margin-bottom:8px; }
+    .present-heading { font-family:'Bricolage Grotesque',sans-serif; font-size:clamp(24px,3vw,36px); font-weight:700; letter-spacing:-0.03em; color:white; line-height:1.15; margin-bottom:20px; }
+    .present-p { font-size:16px; color:rgba(255,255,255,0.60); line-height:1.8; margin-bottom:18px; }
+    .present-subheading { font-family:'Bricolage Grotesque',sans-serif; font-size:18px; font-weight:700; letter-spacing:-0.02em; color:white; margin-bottom:10px; margin-top:36px; }
+    .present-img-wrap { margin:28px -48px; }
+    .present-img-wide { max-width:var(--col-wide); margin:28px auto; }
+
+    /* ─── RESULT SECTION ──────────────────────────── */
+    .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:28px 0; }
+    .result-item {
+      background:var(--bg-warm); border:1px solid var(--border);
+      border-radius:var(--radius-sm); padding:18px 20px;
+    }
+    .result-item-title { font-family:'Bricolage Grotesque',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:4px; }
+    .result-item-body { font-size:13px; color:var(--text-mid); line-height:1.5; }
+
+    /* ─── BACK / NEXT NAV ─────────────────────────── */
+    .case-nav { background:var(--bg-warm); border-top:1px solid var(--border); }
+    .case-nav-inner { max-width:var(--col-full); margin:0 auto; padding:32px 48px; display:flex; justify-content:space-between; align-items:center; }
+    .case-nav a { font-size:15px; font-weight:500; color:var(--text-mid); text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:color 0.2s; }
+    .case-nav a:hover { color:var(--accent); }
+
+    /* ─── FOOTER ──────────────────────────────────── */
+    footer { background:var(--text); padding:40px 48px; }
+    .footer-inner { max-width:var(--col-full); margin:0 auto; display:flex; justify-content:space-between; align-items:center; }
+    .footer-logo { font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:17px; color:white; letter-spacing:-0.02em; }
+    .footer-links { display:flex; gap:28px; }
+    .footer-links a { font-size:14px; color:rgba(255,255,255,0.38); text-decoration:none; transition:color 0.2s; }
+    .footer-links a:hover { color:white; }
+    .footer-copy { font-size:13px; color:rgba(255,255,255,0.22); }
+
+    /* ─── ANIMATIONS ──────────────────────────────── */
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .reveal { opacity:0; transform:translateY(24px); transition:opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .delay-1 { transition-delay:0.10s; }
+    .delay-2 { transition-delay:0.20s; }
+
+    /* ─── RESPONSIVE ──────────────────────────────── */
+    @media (max-width:1024px) {
+      nav { padding:18px 32px; }
+      .hero-inner { padding:48px 32px 0; }
+      .outcomes-inner { padding:28px 32px; }
+      .outcomes-grid { grid-template-columns:1fr 1fr; }
+      .cs-body { padding:56px 32px; }
+      .role-card { grid-template-columns:1fr 1fr; }
+      .present-band { margin:0 -32px; padding:56px 32px; }
+      .case-nav-inner { padding:28px 32px; }
+      footer { padding:36px 32px; }
+    }
+    @media (max-width:768px) {
+      nav { padding:16px 24px; }
+      .nav-links { gap:20px; }
+      .hero-inner { padding:40px 24px 0; }
+      .outcomes-inner { padding:24px; }
+      .outcomes-grid { grid-template-columns:1fr 1fr; }
+      .cs-body { padding:48px 24px; }
+      .role-card { grid-template-columns:1fr; gap:16px; }
+      .img-row.cols-2 { grid-template-columns:1fr; }
+      .result-grid { grid-template-columns:1fr; }
+      .present-band { margin:0 -24px; padding:48px 24px; }
+      .case-nav-inner { padding:24px; flex-direction:column; gap:16px; text-align:center; }
+      footer { padding:32px 24px; }
+      .footer-inner { flex-direction:column; gap:20px; text-align:center; }
+    }
+    @media (max-width:520px) {
+      .nav-text-link { display:none; }
+      .outcomes-grid { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ NAV ════ -->
+<nav>
+  <a href="/index.html" class="nav-logo">Dan Staton</a>
+  <div class="nav-links">
+    <a href="/index.html" class="nav-back nav-text-link">← All work</a>
+    <a href="/about.html" class="nav-text-link">About</a>
+    <a href="mailto:danrstaton@icloud.com" class="nav-cta">Get in touch</a>
+  </div>
+</nav>
+
+<!-- ════ HERO ════ -->
+<div class="hero-wrap">
+  <div class="blob-1"></div>
+  <div class="blob-2"></div>
+  <div class="hero-inner">
+    <div class="hero-image">
+      <img src="https://static.wixstatic.com/media/c89597_ab4dfd114d2a49ffaf10c1a8e73d6648~mv2.png/v1/fill/w_1920,h_680,al_c,q_90,enc_avif,quality_auto/Unified%20Notifications%20Graphic%20copy.png" alt="CVS Notifications unified design system" />
+    </div>
+    <div class="hero-text">
+      <div class="hero-meta">
+        <span class="meta-chip accent">UX Design</span>
+        <span class="meta-chip">CVS Health</span>
+        <span class="meta-chip">2023 – Present</span>
+        <span class="meta-chip">Experience Design Manager</span>
+      </div>
+      <h1 class="hero-title">CVS Notifications:<br>Email, SMS, Push</h1>
+      <p class="hero-summary">221 separately managed notifications. One team. One quarter to consolidate them into a unified design system that now reaches 8 million patients a year.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════ OUTCOMES ════ -->
+<div class="outcomes-strip">
+  <div class="outcomes-inner reveal">
+    <div class="outcomes-label">Outcomes</div>
+    <div class="outcomes-grid">
+      <div class="outcome-card">
+        <div class="outcome-number">221 → 23</div>
+        <div class="outcome-label">Notifications consolidated into reusable templates</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-number">+65%</div>
+        <div class="outcome-label">CTA engagement rate increase</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-number">8M</div>
+        <div class="outcome-label">Patients reached annually</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-number">Minutes</div>
+        <div class="outcome-label">vs. days to make design or content updates</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ BODY ════ -->
+<div class="cs-body">
+
+  <!-- Role card -->
+  <div class="wide reveal">
+    <div class="role-card">
+      <div>
+        <div class="role-section-label">My Role</div>
+        <div class="role-title">Experience Design Manager</div>
+        <div class="role-detail">Collaborated with the Product Director to define consolidation strategy. Reviewed and gave feedback on all designs and content. Gave the design system direction to the team. Analyzed usability testing results and presented findings to leadership.</div>
+      </div>
+      <div>
+        <div class="role-section-label">Team</div>
+        <div class="role-title">Cross-functional</div>
+        <div class="role-detail">Jordan Williams (Sr. Design Lead), Stephanie Nguyen (Experience Designer), James Quirk (Visual Design Lead), Daree Allen-Nieves and KC Skeldon (Content Strategists), Lauren Sheerr Beshears (Product Director), Niveda (Product), Cora Books (Illustration)</div>
+      </div>
+      <div>
+        <div class="role-section-label">Skills</div>
+        <div class="role-title">Leadership + Craft</div>
+        <div class="role-detail">Design Team Management, Systems Thinking, Product Strategy, Negotiation, Visual Design, UX Design, User Research, Usability Testing</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Overview</div>
+    <h2 class="section-heading">A design system for every patient touchpoint</h2>
+    <p class="cs-p">CVS was managing 221 separately coded notifications across their health services — MinuteClinic visits, Pharmacy visits, Virtual Care, and more. Each was individually designed, individually coded, and individually managed.</p>
+    <p class="cs-p">My team and I created a design system to unify email, SMS, and push notification designs, resulting in 23 user-tested templates that now serve as the foundation for every patient communication at CVS Health.</p>
+    <p class="cs-p">This case study covers the creation of that system and its application to confirmation emails. Work in 2024 and 2025 — expanding to reminders, check-ins, cancellations, reschedules, post-visit notifications, SMS, and push — is covered at the bottom.</p>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read); margin-left:auto; margin-right:auto;">
+
+  <!-- Problem -->
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">The Problem</div>
+    <h2 class="section-heading">Inconsistent branding, voice, and design across all notifications</h2>
+    <p class="cs-p">CVS had 221 notifications that were individually coded with varying designs and content, managed in different BCC (Business Controlled Content) slots. Engineers had to manually update each one — a process that was becoming unsustainable.</p>
+    <p class="cs-p">For patients, this meant an inconsistent experience every time they received a notification from CVS. For the team, it meant design and content changes that should take minutes were taking days.</p>
+    <p class="cs-p">Confirmation emails alone had significant variation across service lines:</p>
+    <ul class="cs-ul">
+      <li>MinuteClinic general care (digitally-scheduled, kiosk-scheduled, provider-scheduled)</li>
+      <li>MinuteClinic mental healthcare (digitally-scheduled, kiosk-scheduled)</li>
+      <li>Virtual Care and Virtual Primary Care (multiple scheduling types)</li>
+      <li>CVS Pharmacy immunizations</li>
+      <li>Health service-specific emails with special instructions</li>
+    </ul>
+  </div>
+
+  <div class="wide reveal">
+    <div class="cs-img-wrap">
+      <img class="cs-img no-border" src="https://static.wixstatic.com/media/c89597_14f0124d583a42e8b053f15b87269209~mv2.png/v1/fill/w_1920,h_940,al_c,q_90,enc_avif,quality_auto/Notifications%20types%20services%20and%20lobs.png" alt="Notification types, services, and lines of business" />
+      <p class="cs-img-caption">The full scope: notification types across every CVS health service and line of business.</p>
+    </div>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_3facf317ecc649beb24bf5bed6c45d76~mv2.png/v1/fill/w_1920,h_980,al_c,q_90,enc_avif,quality_auto/c89597_3facf317ecc649beb24bf5bed6c45d76~mv2.png" alt="Current health service confirmation emails with different designs" />
+      <p class="cs-img-caption">Examples of health service confirmation emails prior to the redesign — each with different design, content, and branding.</p>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read); margin-left:auto; margin-right:auto;">
+
+  <!-- Strategy -->
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Strategy</div>
+    <h2 class="section-heading">How to consolidate confirmation emails</h2>
+    <p class="cs-p">I worked closely with Jordan Williams, our Senior Design Lead, to map out a step-by-step approach to consolidating the design and content of the emails, then delegate it effectively to the team.</p>
+    <p class="cs-p">We understood we needed to: gather all existing emails, identify common sections, create a new template, and then design new emails based on that template. We reviewed the plan with Product and Engineering leadership to validate the timeline, then I planned the work across 2-week sprints — five sprints in total.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="cs-img-wrap">
+      <img class="cs-img no-border" src="https://static.wixstatic.com/media/c89597_0035fc7d80ac4a3f8f51ae315e46d75b~mv2.png/v1/fill/w_1920,h_494,al_c,q_90,enc_avif,quality_auto/c89597_0035fc7d80ac4a3f8f51ae315e46d75b~mv2.png" alt="Strategy and timeline for unifying emails" />
+      <p class="cs-img-caption">Our phased consolidation strategy and timeline, broken into defined roles and sprint milestones.</p>
+    </div>
+  </div>
+
+  <div class="read reveal">
+    <div class="callout">
+      <div class="callout-label">Why this worked</div>
+      <div class="callout-text">Everyone had a defined role working toward the same goal. The plan took an entire quarter to execute — but it held, because no one was waiting on someone else to figure out what to do next.</div>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read); margin-left:auto; margin-right:auto;">
+
+  <!-- Identify sections -->
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Step 1</div>
+    <h2 class="section-heading">Identify and create common email sections</h2>
+    <p class="cs-p">After Niveda gathered all confirmation emails for every service, Stephanie reviewed them to identify common sections that appeared across every line of business:</p>
+    <ul class="cs-ul">
+      <li>Email header</li>
+      <li>Email body</li>
+      <li>Visit details (who, when, where, confirmation code)</li>
+      <li>What to bring</li>
+      <li>Next steps and how to check in</li>
+      <li>COVID-19 precautions</li>
+      <li>Additional information</li>
+    </ul>
+    <p class="cs-p">Within each section, she identified common elements: headings, paragraph text, and CTAs. With this mapping complete, there was now a consistent pattern for every part of a confirmation email, regardless of line of business or service type.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="img-row cols-2">
+      <div>
+        <img class="cs-img" src="https://static.wixstatic.com/media/c89597_f2db6a6100d24b599d9b15db7c38d661~mv2.png/v1/fill/w_856,h_1200,al_c,q_90,enc_avif,quality_auto/c89597_f2db6a6100d24b599d9b15db7c38d661~mv2.png" alt="Email sections breakdown" />
+        <p class="cs-img-caption">Email sections identified: header, body, confirmation code, and visit details.</p>
+      </div>
+      <div>
+        <img class="cs-img" src="https://static.wixstatic.com/media/c89597_848fa009c72740db92015089b0c6a033~mv2.png/v1/fill/w_856,h_858,al_c,q_90,enc_avif,quality_auto/c89597_848fa009c72740db92015089b0c6a033~mv2.png" alt="Visit details section broken down" />
+        <p class="cs-img-caption">The Visit Details section, broken into headings, body text, and links — a universal pattern for every email type.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read); margin-left:auto; margin-right:auto;">
+
+  <!-- Create templates -->
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Step 2</div>
+    <h2 class="section-heading">Create email templates</h2>
+    <p class="cs-p">Our Visual Design Lead James Quirk took Stephanie's common sections and built them as Figma components — each one designed to contain all the information that could possibly be needed, but able to show less when a particular service didn't require it.</p>
+    <p class="cs-p">For example, "Confirmation code" wasn't needed for Virtual Care visits, so that part of the component could be toggled off. The challenge James and I worked through was making components flexible enough for edge cases without becoming so complex they were difficult to use.</p>
+    <p class="cs-p">The result: any designer could pull components from the library, toggle the information needed, and drag-and-drop them to build a complete email.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_8b40efa2b03846cbbc38a7658ca1ed07~mv2.png/v1/fill/w_1604,h_1212,al_c,q_90,enc_avif,quality_auto/IMG_2985_heic.png" alt="Variations of component sections" />
+      <p class="cs-img-caption">Component variants for each email section, built to cover all possible service and line-of-business combinations.</p>
+    </div>
+    <div class="cs-img-wrap" style="max-width:500px; margin:36px auto;">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_2ad57427b4e046cfa60aab063658d8c0~mv2.png/v1/fill/w_982,h_1264,al_c,q_90,enc_avif,quality_auto/IMG_2986_heic.png" alt="Confirmation email max template" />
+      <p class="cs-img-caption">The "Max View" confirmation template — every possible section, built from James's components, ready to be configured for any service type.</p>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read); margin-left:auto; margin-right:auto;">
+
+  <!-- Unify content -->
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Step 3</div>
+    <h2 class="section-heading">Unify content for all emails</h2>
+    <p class="cs-p">While James built the components, Stephanie gathered existing content for each email section across every line of business. The inconsistency was striking — the email header alone had five different variations:</p>
+    <ul class="cs-ul">
+      <li>"Your visit is scheduled"</li>
+      <li>"Your visit has been scheduled"</li>
+      <li>"Your new visit has been scheduled"</li>
+      <li>"You're in line! Learn what to expect as you wait"</li>
+      <li>"Here's what to expect."</li>
+    </ul>
+    <p class="cs-p">Our Content Strategist Daree reviewed Stephanie's findings and consolidated them. In this case, five headers became two:</p>
+    <ul class="cs-ul">
+      <li><strong>"Your visit is scheduled"</strong> — for in-person visits</li>
+      <li><strong>"Here's what to expect"</strong> — for virtual visits</li>
+    </ul>
+    <p class="cs-p">Consistent content doesn't just improve the patient experience — it means CVS teams have far less to manage. A single change can now update multiple emails at once, instead of each one separately.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_8742e16cb7bd4d0eba07554459cad84f~mv2.png/v1/fill/w_1838,h_818,al_c,q_90,enc_avif,quality_auto/c89597_8742e16cb7bd4d0eba07554459cad84f~mv2.png" alt="Email header old content vs new content" />
+      <p class="cs-img-caption">Before and after: five inconsistent email headers consolidated into two clear, consistent messages.</p>
+    </div>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_8c01463fdd6a4eb09db308cc9c0cc9ea~mv2.png/v1/fill/w_1886,h_650,al_c,q_90,enc_avif,quality_auto/c89597_8c01463fdd6a4eb09db308cc9c0cc9ea~mv2.png" alt="Visit details component across lines of business" />
+      <p class="cs-img-caption">The Visit Details component applied across lines of business — MinuteClinic includes a confirmation code, while Virtual Care and Pharmacy visits do not.</p>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read); margin-left:auto; margin-right:auto;">
+
+  <!-- Stakeholder approval -->
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Step 4</div>
+    <h2 class="section-heading">Get approval from stakeholders</h2>
+    <p class="cs-p">Once Stephanie completed each email using James's components and Daree's content, I looped in our Product Director Lauren to review from a business perspective. Based on her feedback, I made content adjustments directly — keeping the revision loop tight and moving quickly.</p>
+    <p class="cs-p">Jordan and I then facilitated broader stakeholder reviews, meeting with business partners across each line of business — including Product, clinical partners, legal, security, and other stakeholders. KC attended those meetings and made content adjustments in real time.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_e2fbadc096654d8bb68055f321e2720b~mv2.png/v1/fill/w_1852,h_926,al_c,q_90,enc_avif,quality_auto/c89597_e2fbadc096654d8bb68055f321e2720b~mv2.png" alt="Reviewing components with Product Director" />
+      <p class="cs-img-caption">Reviewing components with Lauren, our Executive Product Director, to validate designs from a business perspective.</p>
+    </div>
+    <div class="img-row cols-2 reveal">
+      <div>
+        <img class="cs-img" src="https://static.wixstatic.com/media/c89597_d9470373c1b64a0c9a904ea3b376a59d~mv2.png/v1/fill/w_866,h_746,al_c,q_90,enc_avif,quality_auto/c89597_d9470373c1b64a0c9a904ea3b376a59d~mv2.png" alt="Hormonal Birth Control and Virtual Care visit emails" />
+        <p class="cs-img-caption">Hormonal Birth Control visit email and Virtual Care visit email.</p>
+      </div>
+      <div>
+        <img class="cs-img" src="https://static.wixstatic.com/media/c89597_def2937f0d3d49048932844023928d52~mv2.png/v1/fill/w_982,h_746,al_c,q_90,enc_avif,quality_auto/c89597_def2937f0d3d49048932844023928d52~mv2.png" alt="Covid-19 test and Smoking Cessation emails" />
+        <p class="cs-img-caption">COVID-19 test email and Smoking Cessation visit email.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read); margin-left:auto; margin-right:auto;">
+
+  <!-- Usability testing -->
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Step 5</div>
+    <h2 class="section-heading">Usability testing to validate the work</h2>
+    <p class="cs-p">Stephanie, KC, and I designed a research study to validate our email designs, content, and CTAs against real customer comprehension and expectations. We tested across four task areas:</p>
+    <ul class="cs-ul">
+      <li>View each email subject and preview — state expectations of what the email will contain</li>
+      <li>On seeing the full email — confirm if expectations were met and why</li>
+      <li>Identify what they see and what actions they think they can take</li>
+      <li>State what they expect each CTA to do (PreCheck-in, Add to calendar, Get directions, etc.)</li>
+    </ul>
+    <p class="cs-p">We submitted the test to UserTesting.com. Stephanie took detailed notes on all sessions, and I did the analysis — reviewing notes per question, drawing conclusions, and mapping insights back to our research goals.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_569467ff43b6482ba3c7aa3d80d8dfea~mv2.png/v1/fill/w_1850,h_1050,al_c,q_90,enc_avif,quality_auto/c89597_569467ff43b6482ba3c7aa3d80d8dfea~mv2.png" alt="Usability testing prototype" />
+      <p class="cs-img-caption">Prototype of mailboxes, confirmation emails, and reminder emails built by James and Stephanie for the usability study.</p>
+    </div>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_a2736fc6b0164f188ab8f3979ca68f61~mv2.png/v1/fill/w_1862,h_950,al_c,q_90,enc_avif,quality_auto/c89597_a2736fc6b0164f188ab8f3979ca68f61~mv2.png" alt="Usability testing feedback" />
+    </div>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_fa24f742679d4f56aee25deef7f85701~mv2.png/v1/fill/w_1856,h_1304,al_c,q_90,enc_avif,quality_auto/c89597_fa24f742679d4f56aee25deef7f85701~mv2.png" alt="Usability testing feedback analysis" />
+    </div>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_3533b397d9ca424bb26f75c16c2a0fa7~mv2.png/v1/fill/w_1854,h_1010,al_c,q_90,enc_avif,quality_auto/c89597_3533b397d9ca424bb26f75c16c2a0fa7~mv2.png" alt="Summary of usability testing feedback" />
+      <p class="cs-img-caption">Summary of findings presented to design, design leadership, Product leadership, architecture, and engineering.</p>
+    </div>
+  </div>
+
+  <div class="read reveal">
+    <div class="section-subheading">What we learned</div>
+    <p class="cs-p">All participants understood the purpose of each email and said the information matched their expectations. But testing also surfaced important issues to address:</p>
+    <div class="callout">
+      <div class="callout-label">Key findings</div>
+      <ul class="insight-list">
+        <li>Participants couldn't easily find the reschedule/cancel link — we needed to make it more prominent</li>
+        <li>Several participants confused "PreCheck-in" with "Check-in" — two different processes that needed clearer distinction</li>
+        <li>"Add to calendar" had low comprehension — participants didn't know which app would open or what would be included</li>
+        <li>All participants said emails had the right information — nothing was missing</li>
+      </ul>
+    </div>
+    <p class="cs-p">Next steps from testing: replace generic "Add to calendar" with "Add to Google Calendar" and "Add to Apple Calendar," visually emphasize the reschedule/cancel link, and conduct a follow-up study on PreCheck-in terminology.</p>
+  </div>
+
+  <div class="wide reveal" style="margin-top:36px;">
+    <div class="img-row cols-2">
+      <div>
+        <img class="cs-img" src="https://static.wixstatic.com/media/c89597_60ef7c624d8c42249e915440f99247fe~mv2.png/v1/fill/w_920,h_506,al_c,q_90,enc_avif,quality_auto/c89597_60ef7c624d8c42249e915440f99247fe~mv2.png" alt="Check-in language confusion feedback" />
+        <p class="cs-img-caption">Testing revealed confusion between "PreCheck-in" and "Check-in" — two distinct processes that needed clearer differentiation.</p>
+      </div>
+      <div>
+        <img class="cs-img" src="https://static.wixstatic.com/media/c89597_9458ab4d0f55497faf8c74271a56c670~mv2.png/v1/fill/w_912,h_506,al_c,q_90,enc_avif,quality_auto/c89597_9458ab4d0f55497faf8c74271a56c670~mv2.png" alt="Reminders found helpful" />
+        <p class="cs-img-caption">Participants consistently found the reminder emails helpful and said they matched expectations.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read); margin-left:auto; margin-right:auto;">
+
+  <!-- Result -->
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Result</div>
+    <h2 class="section-heading">A system that actually worked</h2>
+    <p class="cs-p">My team successfully executed on the full consolidation strategy. What started as 221 separately managed notifications became a unified, validated, scalable design system in a single quarter.</p>
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="result-item-title">Consistent experience</div>
+        <div class="result-item-body">Unified design, branding, and content for 6 lines of business</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title">Easier to manage</div>
+        <div class="result-item-body">Content changes that took days now take minutes</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title">Validated by users</div>
+        <div class="result-item-body">Tested and approved by stakeholders across legal, clinical, and product</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title">Better expectations</div>
+        <div class="result-item-body">Patients now receive clear confirmation and next steps for every visit type</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wide reveal">
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_f1282bb2b518405b8b16366b302a19cb~mv2.png/v1/fill/w_1854,h_952,al_c,q_90,enc_avif,quality_auto/IMG_2990_heic.png" alt="Old vs new email designs" />
+      <p class="cs-img-caption">Before and after: old designs on the left, consolidated new designs on the right, for each line of business.</p>
+    </div>
+    <div class="cs-img-wrap">
+      <img class="cs-img no-border" src="https://static.wixstatic.com/media/c89597_6602c880204c4ecaabab68e472995063~mv2.png/v1/fill/w_1888,h_262,al_c,q_90,enc_avif,quality_auto/Notifications%20outcomes%20data.png" alt="Notifications outcomes data" />
+    </div>
+  </div>
+
+  <!-- Present day band -->
+  <div class="present-band reveal">
+    <div class="present-inner">
+      <div class="present-eyebrow">2024 – Present</div>
+      <h2 class="present-heading">The system kept growing</h2>
+      <p class="present-p">The design system we established proved wildly successful. After confirming emails, we rapidly consolidated reminders, check-ins, cancellations, reschedules, and post-visit notifications. We then added SMS and push notification components to the system.</p>
+      <p class="present-p">Today, some notification requests can be completed in under an hour for small copy improvements. Larger requests can be mocked up quickly for discussion and iterated upon for fast delivery — something that was impossible before the system existed.</p>
+    </div>
+
+    <div style="max-width:var(--col-wide); margin:0 auto; padding:0 0;">
+      <div class="cs-img-wrap" style="margin:36px 0;">
+        <img class="cs-img" style="border-color:rgba(255,255,255,0.12);" src="https://static.wixstatic.com/media/c89597_6de31392012d4f4d875fa480100f5715~mv2.png/v1/fill/w_1802,h_1184,al_c,q_90,enc_avif,quality_auto/IMG_1162_HEIC.png" alt="Present day notification system" />
+      </div>
+    </div>
+
+    <div class="present-inner">
+      <div class="present-subheading">AI for content</div>
+      <p class="present-p">I integrated Writer AI — which connects to CVS's content style guide — to check grade level, align copy with CVS tone, and reduce text length for notifications. Research and design tasks that used to take days now take hours.</p>
+
+      <div class="present-subheading">Adding illustrations</div>
+      <p class="present-p">Cora Books and I collaborated on adding illustrations within emails, based on analytics showing patients weren't always completing PreCheck-in or reviewing full visit details. The illustrations helped draw attention to key sections. All illustration credit to Cora Books.</p>
+
+      <div class="present-subheading">Push notifications</div>
+      <p class="present-p">Our team added push notifications sparingly for specific use cases — for example, a check-in push when a patient is in the store. We made the deliberate call to keep push minimal, which was validated when later testing showed patients strongly prefer SMS and email over push notifications.</p>
+
+      <div class="present-subheading">Testing channel and frequency preferences</div>
+      <p class="present-p">I partnered with Beth Koloski to run a preference test with 100 patients. The results surprised us — SMS was the most preferred channel for reminders, with email second for post-visit notifications. Push was not the convenience win we expected; patients found it overwhelming. We adjusted messaging frequency accordingly.</p>
+    </div>
+
+    <div style="max-width:var(--col-wide); margin:0 auto;">
+      <div class="img-row cols-2" style="margin:36px 0; padding:0;">
+        <div>
+          <img class="cs-img" style="border-color:rgba(255,255,255,0.12);" src="https://static.wixstatic.com/media/c89597_dae6f3eb265147efaa6e9426e7751229~mv2.png/v1/fill/w_1066,h_920,al_c,q_90,enc_avif,quality_auto/Writer%20AI_HEIC.png" alt="Writer AI for content" />
+          <p class="cs-img-caption" style="color:rgba(255,255,255,0.38);">Writer AI integrated with CVS's content style guide for grade-level checking and tone alignment.</p>
+        </div>
+        <div>
+          <img class="cs-img" style="border-color:rgba(255,255,255,0.12);" src="https://static.wixstatic.com/media/c89597_22528e6d920e440fba3f1350dff1f29f~mv2.png/v1/fill/w_1026,h_928,al_c,q_90,enc_avif,quality_auto/Push%20notifications_HEIC.png" alt="Push notifications" />
+          <p class="cs-img-caption" style="color:rgba(255,255,255,0.38);">Push notifications, used sparingly for in-context moments like store check-in.</p>
+        </div>
+      </div>
+      <div class="img-row cols-2" style="margin:0 0 36px; padding:0;">
+        <div>
+          <img class="cs-img" style="border-color:rgba(255,255,255,0.12);" src="https://static.wixstatic.com/media/c89597_c97db6a7d0744e6790dd6a6f9a864eee~mv2.png/v1/fill/w_1066,h_680,al_c,q_90,enc_avif,quality_auto/Email%20precheck-in_HEIC.png" alt="Email precheck-in" />
+          <p class="cs-img-caption" style="color:rgba(255,255,255,0.38);">Updated PreCheck-in email with improved CTA clarity.</p>
+        </div>
+        <div>
+          <img class="cs-img" style="border-color:rgba(255,255,255,0.12);" src="https://static.wixstatic.com/media/c89597_e5996faf6f6e4108b2b330ad4ae9a8bc~mv2.png/v1/fill/w_980,h_446,al_c,q_90,enc_avif,quality_auto/Channel%20preference%20testing_HEIC.png" alt="Channel preference testing" />
+          <p class="cs-img-caption" style="color:rgba(255,255,255,0.38);">Channel preference testing results: SMS topped email for reminders, while push proved overwhelming.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="present-inner">
+      <div class="present-subheading">Conclusion</div>
+      <p class="present-p">We now send notifications to an average of 8 million patients per year — and continue to see that small tweaks and updates increase engagement. The templates proved to consolidate design and content in a way that's easier for patients to understand and easier for CVS to manage and evolve.</p>
+    </div>
+
+    <div style="max-width:var(--col-wide); margin:36px auto 0;">
+      <img class="cs-img" style="border-color:rgba(255,255,255,0.12);" src="https://static.wixstatic.com/media/c89597_6602c880204c4ecaabab68e472995063~mv2.png/v1/fill/w_1888,h_262,al_c,q_90,enc_avif,quality_auto/Notifications%20outcomes%20data.png" alt="Notifications outcomes data" />
+    </div>
+  </div>
+
+</div><!-- /cs-body -->
+
+<!-- ════ CASE NAV ════ -->
+<div class="case-nav">
+  <div class="case-nav-inner">
+    <a href="/index.html">← Back to all work</a>
+    <a href="/about.html">About Dan →</a>
+  </div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Dan Staton</div>
+    <div class="footer-links">
+      <a href="mailto:danrstaton@icloud.com">Email</a>
+      <a href="http://www.linkedin.com/in/danrstaton" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://drive.google.com/file/d/1PKAs-82AByGpGAP4KOk0ew4dJBvWjpNv/view?usp=sharing" target="_blank" rel="noopener">Resume</a>
+    </div>
+    <div class="footer-copy">© 2026 Dan Staton</div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
