@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeachersConnect App — Dan Staton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#F7F4EF;--bg-warm:#EFE9E0;--white:#FFFFFF;--text:#1A1614;--text-mid:#6B6460;--text-light:#9C9490;--accent:#C4673A;--accent-mid:#E8956E;--border:#E0D9D0;--radius:16px;--radius-sm:12px;--col-read:680px;--col-wide:960px;--col-full:1200px}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(247,244,239,0.75);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-bottom:1px solid rgba(255,255,255,0.88);box-shadow:0 1px 0 rgba(255,255,255,0.95) inset,0 4px 24px rgba(0,0,0,0.05)}
+    .nav-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;color:var(--text);text-decoration:none;letter-spacing:-0.02em}
+    .nav-links{display:flex;gap:40px;align-items:center}
+    .nav-links a{font-size:15px;color:var(--text-mid);text-decoration:none;transition:color 0.2s}
+    .nav-links a:hover{color:var(--text)}
+    .nav-cta{background:var(--text)!important;color:var(--bg)!important;padding:9px 20px!important;border-radius:100px;font-size:14px!important;font-weight:500!important;transition:background 0.2s,transform 0.2s!important}
+    .nav-cta:hover{background:var(--accent)!important;color:white!important;transform:translateY(-1px)}
+    .hero-wrap{background:var(--bg);position:relative;overflow:hidden;padding-top:88px}
+    .blob-1{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(196,103,58,0.18) 0%,rgba(196,103,58,0.06) 45%,transparent 70%);top:-120px;right:-80px;border-radius:50%;pointer-events:none}
+    .blob-2{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(232,149,110,0.14) 0%,rgba(232,149,110,0.04) 50%,transparent 70%);bottom:0;left:-80px;border-radius:50%;pointer-events:none}
+    .hero-inner{position:relative;z-index:1;max-width:var(--col-wide);margin:0 auto;padding:0}
+    .hero-image{padding:20px 20px 0;opacity:0;animation:fadeUp 0.6s ease forwards 0.05s}
+    .hero-image img{width:100%;display:block;border-radius:16px}
+    .hero-text{padding:40px 48px 0}
+    .hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;opacity:0;transform:translateY(16px);animation:fadeUp 0.5s ease forwards 0.2s}
+    .meta-chip{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:100px;background:var(--bg-warm);border:1px solid var(--border);color:var(--text-mid)}
+    .meta-chip.accent{background:var(--accent);border-color:var(--accent);color:white}
+    .meta-chip.lead{background:rgba(39,106,44,0.10);border:1px solid rgba(39,106,44,0.15);color:#276A2C}
+    .meta-chip.ux{background:rgba(42,74,122,0.10);border:1px solid rgba(42,74,122,0.15);color:#2A4A7A}
+    .hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:800;letter-spacing:-0.04em;color:var(--text);line-height:1.0;margin-bottom:24px;opacity:0;transform:translateY(20px);animation:fadeUp 0.6s ease forwards 0.3s}
+    .hero-summary{font-size:18px;color:var(--text-mid);line-height:1.65;max-width:600px;margin-bottom:48px;opacity:0;transform:translateY(16px);animation:fadeUp 0.5s ease forwards 0.4s}
+    .outcomes-strip{background:linear-gradient(155deg,#F3EAE0 0%,#EDE0D2 50%,#F0E8DC 100%);border-bottom:1px solid var(--border)}
+    .outcomes-inner{max-width:var(--col-wide);margin:0 auto;padding:32px 48px}
+    .outcomes-label{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+    .outcomes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .outcome-card{background:rgba(255,255,255,0.60);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,0.88);border-radius:var(--radius-sm);padding:18px 20px;box-shadow:0 1px 0 rgba(255,255,255,0.98) inset,0 4px 16px rgba(0,0,0,0.05)}
+    .outcome-number{font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:5px}
+    .outcome-label{font-size:12px;color:var(--text-mid);line-height:1.4}
+    .cs-body{padding:72px 48px}
+    .read{max-width:var(--col-read);margin:0 auto}
+    .wide{max-width:var(--col-wide);margin:0 auto}
+    .role-card{background:rgba(255,255,255,0.62);backdrop-filter:blur(24px) saturate(170%);-webkit-backdrop-filter:blur(24px) saturate(170%);border:1px solid rgba(255,255,255,0.88);border-radius:var(--radius);padding:28px 32px;box-shadow:0 1px 0 rgba(255,255,255,0.98) inset,0 8px 32px rgba(0,0,0,0.06);display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-bottom:64px}
+    .role-section-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+    .role-title{font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .role-detail{font-size:13px;color:var(--text-mid);line-height:1.55}
+    .cs-section{margin-bottom:72px}
+    .section-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+    .section-heading{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(24px,3vw,34px);font-weight:700;letter-spacing:-0.03em;color:var(--text);line-height:1.15;margin-bottom:20px}
+    .section-subheading{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;color:var(--text);line-height:1.2;margin-bottom:14px;margin-top:40px}
+    .cs-p{font-size:16px;color:var(--text-mid);line-height:1.8;margin-bottom:18px}
+    .cs-ul{margin:0 0 18px 0;padding-left:20px}
+    .cs-ul li{font-size:15px;color:var(--text-mid);line-height:1.7;margin-bottom:6px}
+    .cs-img-wrap{margin:36px 0}
+    .cs-img{width:100%;border-radius:var(--radius-sm);display:block;border:1px solid var(--border);cursor:zoom-in;transition:opacity 0.18s}
+    .cs-img:hover{opacity:0.87}
+    .cs-img.no-border{border:none}
+    .cs-img-caption{font-size:12px;color:var(--text-light);margin-top:10px;line-height:1.5}
+    .img-row{display:grid;gap:16px;margin:36px 0}
+    .img-row.cols-2{grid-template-columns:1fr 1fr}
+    .img-row.cols-3{grid-template-columns:1fr 1fr 1fr}
+    .img-row.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+    .img-row img{width:100%;border-radius:var(--radius-sm);display:block;border:1px solid var(--border);cursor:zoom-in;transition:opacity 0.18s}
+    .img-row img:hover{opacity:0.87}
+    .callout{background:rgba(255,255,255,0.60);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid rgba(255,255,255,0.88);border-radius:var(--radius-sm);padding:24px 28px;box-shadow:0 1px 0 rgba(255,255,255,0.98) inset,0 4px 16px rgba(0,0,0,0.05);margin:28px 0}
+    .callout-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+    .callout-text{font-size:15px;color:var(--text);line-height:1.65}
+    .insight-list{list-style:none;padding:0;margin:18px 0}
+    .insight-list li{font-size:14px;color:var(--text-mid);line-height:1.65;padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+    .insight-list li:last-child{border-bottom:none}
+    .insight-list li::before{content:'→';color:var(--accent);font-size:13px;flex-shrink:0;margin-top:2px}
+    .example-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:24px 26px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,0.05)}
+    .example-num{font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+    .example-title{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.02em;color:var(--text);margin-bottom:10px}
+    .example-body{font-size:14px;color:var(--text-mid);line-height:1.65}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:28px 0}
+    .result-item{background:var(--bg-warm);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 20px}
+    .result-item-title{font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .result-item-body{font-size:13px;color:var(--text-mid);line-height:1.5}
+    .quote-block{border-left:3px solid var(--accent);padding:14px 20px;margin:20px 0;background:var(--bg-warm);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+    .quote-text{font-size:15px;color:var(--text);line-height:1.7;font-style:italic;margin-bottom:6px}
+    .quote-attr{font-size:12px;color:var(--text-mid);font-weight:600}
+    .quote-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px 0}
+    .quote-bubble{background:var(--bg-warm);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;font-size:14px;color:var(--text-mid);font-style:italic;line-height:1.6}
+    .process-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:28px 0}
+    .process-step{background:var(--bg-warm);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 14px;text-align:center}
+    .process-step-num{font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:var(--accent);margin-bottom:6px}
+    .process-step-label{font-size:12px;color:var(--text-mid);line-height:1.4;font-weight:500}
+    .process-flow{display:flex;gap:0;margin:28px 0;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+    .pf-step{flex:1;padding:16px 12px;text-align:center;background:var(--white);border-right:1px solid var(--border);font-size:12px;color:var(--text-mid);font-weight:500}
+    .pf-step:last-child{border-right:none}
+    .pf-num{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;color:var(--accent);display:block;margin-bottom:4px}
+    .heuristic-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:28px 0}
+    .heuristic-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+    .heuristic-title{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
+    .heuristic-body{font-size:13px;color:var(--text-mid);line-height:1.6}
+    .persona-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+    .persona-card img{width:100%;display:block;border-radius:var(--radius-sm);border:1px solid var(--border)}
+    .tl-steps{position:relative}
+    .tl-steps::before{content:'';position:absolute;left:20px;top:8px;bottom:8px;width:1.5px;background:var(--border)}
+    .tl-step{position:relative;padding-left:56px;margin-bottom:44px}
+    .tl-step:last-child{margin-bottom:0}
+    .tl-dot{position:absolute;left:12px;top:6px;width:17px;height:17px;border-radius:50%;background:var(--white);border:2.5px solid var(--border);z-index:1}
+    .tl-step.active .tl-dot{border-color:var(--accent);background:var(--accent)}
+    .tl-time{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+    .tl-step-title{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.02em;color:var(--text);margin-bottom:10px}
+    .cs-divider{border:none;border-top:1px solid var(--border);margin:64px 0}
+    .award-band{background:linear-gradient(135deg,#1A1614 0%,#2A1E18 100%);padding:48px;border-radius:var(--radius);margin:48px 0;text-align:center}
+    .award-band-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-mid);margin-bottom:12px}
+    .award-band-title{font-family:'Bricolage Grotesque',sans-serif;font-size:32px;font-weight:800;letter-spacing:-0.03em;color:white;margin-bottom:12px}
+    .award-band-body{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.65;max-width:560px;margin:0 auto}
+    .case-nav{background:var(--bg-warm);border-top:1px solid var(--border)}
+    .case-nav-inner{max-width:var(--col-full);margin:0 auto;padding:32px 48px;display:flex;justify-content:space-between;align-items:center}
+    .case-nav a{font-size:15px;font-weight:500;color:var(--text-mid);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:color 0.2s}
+    .case-nav a:hover{color:var(--accent)}
+    footer{background:var(--text);padding:40px 48px}
+    .footer-inner{max-width:var(--col-full);margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+    .footer-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:white;letter-spacing:-0.02em}
+    .footer-links{display:flex;gap:28px}
+    .footer-links a{font-size:14px;color:rgba(255,255,255,0.38);text-decoration:none;transition:color 0.2s}
+    .footer-links a:hover{color:white}
+    .footer-copy{font-size:13px;color:rgba(255,255,255,0.22)}
+    .lb-overlay{position:fixed;inset:0;background:rgba(10,8,7,0.88);z-index:9000;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity 0.25s ease;pointer-events:none}
+    .lb-overlay.open{opacity:1;pointer-events:all}
+    .lb-inner{max-width:92vw;max-height:92vh;display:flex;flex-direction:column;align-items:center;gap:14px}
+    .lb-img{max-width:100%;max-height:80vh;border-radius:12px;object-fit:contain;box-shadow:0 24px 80px rgba(0,0,0,0.5)}
+    .lb-caption{font-size:13px;color:rgba(255,255,255,0.65);text-align:center;max-width:640px;line-height:1.55}
+    .lb-close{position:fixed;top:20px;right:20px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;z-index:9001}
+    .lb-close:hover{background:rgba(255,255,255,0.22)}
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    @media(max-width:1024px){nav{padding:18px 32px}.hero-text{padding:32px 32px 0}.outcomes-inner{padding:28px 32px}.outcomes-grid{grid-template-columns:1fr 1fr}.cs-body{padding:56px 32px}.role-card{grid-template-columns:1fr 1fr}.heuristic-grid{grid-template-columns:1fr}.process-steps{grid-template-columns:repeat(3,1fr)}.case-nav-inner{padding:28px 32px}footer{padding:36px 32px}}
+    @media(max-width:768px){nav{padding:16px 24px}.nav-links{gap:20px}.hero-image{padding:12px 12px 0}.hero-text{padding:28px 24px 0}.outcomes-inner{padding:24px}.outcomes-grid{grid-template-columns:1fr 1fr}.cs-body{padding:48px 24px}.role-card{grid-template-columns:1fr;gap:16px}.img-row.cols-2,.img-row.cols-3,.img-row.cols-4{grid-template-columns:1fr 1fr}.result-grid,.quote-row,.persona-grid,.heuristic-grid{grid-template-columns:1fr}.process-steps{grid-template-columns:1fr 1fr}.process-flow{flex-direction:column}.pf-step{border-right:none;border-bottom:1px solid var(--border)}.pf-step:last-child{border-bottom:none}.case-nav-inner{padding:24px;flex-direction:column;gap:16px;text-align:center}footer{padding:32px 24px}.footer-inner{flex-direction:column;gap:20px;text-align:center}}
+    @media(max-width:520px){.nav-text-link{display:none}.img-row.cols-2,.img-row.cols-3,.img-row.cols-4{grid-template-columns:1fr}}
+
+
+  </style>
+</head>
+<body>
+<nav><a href="/index.html" class="nav-logo">Dan Staton</a><div class="nav-links"><a href="/index.html" class="nav-text-link">← All work</a><a href="/about.html" class="nav-text-link">About</a><a href="mailto:danrstaton@icloud.com" class="nav-cta">Get in touch</a></div></nav>
+<div class="lb-overlay" id="lb"><div class="lb-inner"><img class="lb-img" id="lb-img" src="" alt="" /><p class="lb-caption" id="lb-cap"></p></div><button class="lb-close" id="lb-close" aria-label="Close">✕</button></div>
+<div class="hero-wrap"><div class="blob-1"></div><div class="blob-2"></div>
+  <div class="hero-inner">
+    <div class="hero-image"><img src="https://static.wixstatic.com/media/c89597_08740e15325f4bafa832f164fb9705a9~mv2.png/v1/fill/w_1920,h_680,al_c,q_90,enc_avif,quality_auto/TeachersConnect%20Graphic.png" alt="TeachersConnect App" /></div>
+    <div class="hero-text">
+      <div class="hero-meta"><span class="meta-chip ux">UX Design</span><span class="meta-chip">TeachersConnect</span><span class="meta-chip">Feb – Aug 2017</span><span class="meta-chip">Lead UX Designer</span></div>
+      <h1 class="hero-title">TeachersConnect App</h1>
+      <p class="hero-summary">150+ tested screens. App Store launch. A safe, collaborative space for K–12 teachers to share, connect, and grow — built from research that started with one insight: teachers feel isolated.</p>
+    </div>
+  </div>
+</div>
+<div class="outcomes-strip"><div class="outcomes-inner reveal">
+  <div class="outcomes-label">Outcomes</div>
+  <div class="outcomes-grid">
+    <div class="outcome-card"><div class="outcome-number">150+</div><div class="outcome-label">Screens designed and user-tested for launch</div></div>
+    <div class="outcome-card"><div class="outcome-number">Launched</div><div class="outcome-label">Apple App Store launch secured funding and new partnerships</div></div>
+    <div class="outcome-card"><div class="outcome-number">Hundreds</div><div class="outcome-label">Teachers joined from alumni programs at launch</div></div>
+    <div class="outcome-card"><div class="outcome-number">6 months</div><div class="outcome-label">Concept to shipped, in weekly design sprints</div></div>
+  </div>
+</div></div>
+<div class="cs-body">
+
+  <div class="wide reveal">
+    <div class="role-card">
+      <div><div class="role-section-label">My Role</div><div class="role-title">Lead UX Designer</div><div class="role-detail">End-to-end UX and UI design in a startup team of four. I analyzed initial research, defined brand UX values, sketched and prototyped all four app sections (Discover, Q&amp;A, Connect, Me), ran usability tests throughout, and designed 150+ screens from sketch to hi-fi.</div></div>
+      <div><div class="role-section-label">Team</div><div class="role-title">Startup team of 4</div><div class="role-detail">Small cross-functional founding team where I was the sole designer. Prior research by the team was the foundation I built every design decision on.</div></div>
+      <div><div class="role-section-label">Skills</div><div class="role-title">Full-cycle Product Design</div><div class="role-detail">User Research Analysis, Brand Design, Information Architecture, Sketching, Prototyping, Usability Testing, A/B Testing, Navigation Design, Visual Design</div></div>
+    </div>
+  </div>
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">The Research Foundation</div>
+    <h2 class="section-heading">Teachers feel isolated — and want a place to connect</h2>
+    <p class="cs-p">Before I joined, the team had interviewed 25 teachers about their professional lives. Three quotes captured the core insight that shaped everything we built:</p>
+    <div class="quote-block"><div class="quote-text">"It's sort of lonely. You're stuck in a room with kids all day, and you really don't have a place to talk to other teachers."</div><div class="quote-attr">Jenna</div></div>
+    <div class="quote-block"><div class="quote-text">"I live on a geometry island at my school. I try to share what I do with other teachers because I need help, but no one shares back."</div><div class="quote-attr">Meredith</div></div>
+    <div class="quote-block"><div class="quote-text">"When something works in my classroom, I don't want it to end there. I want to get it out to the world so they can do cool things with their students."</div><div class="quote-attr">Josh</div></div>
+    <p class="cs-p">The need was clear: a safe, non-judgmental community where teachers could share ideas, ask questions, and connect with others who genuinely understood their experience.</p>
+    <div class="callout">
+      <div class="callout-label">Design problem statement</div>
+      <div class="callout-text">Teachers need a safe and collaborative space filled with teachers similar to them, so that they can exchange resources, share experiences, ask questions, and form connections to improve their teaching lives.</div>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">The Four Sections</div>
+    <h2 class="section-heading">Discover, Q&amp;A, Connect, and Me</h2>
+  </div>
+
+  <div class="wide">
+    <div class="section-subheading read reveal" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">Discover — sharing resources, lessons, and stories</div>
+    <div class="read reveal" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+      <p class="cs-p">The original concept used isolated "spaces" by subject and grade. Testing showed teachers felt too separated from the broader community — they wanted to learn from teachers unlike themselves. We shifted to a universal feed with filters to narrow as needed. The name "Discover" tested best because it felt like exploration, not just consumption.</p>
+      <p class="cs-p">For emotional reactions, testing showed "Helpful" and "Me Too" resonated most. "Helpful" felt more meaningful than a generic Like, and "Me Too" gave teachers a powerful sense of not being alone in their experience.</p>
+    </div>
+    <div class="img-row cols-2 reveal">
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_edc94e4dff234c7cbbcf84b9fbe2413a~mv2.png/v1/fill/w_408,h_736,al_c,q_90,enc_avif,quality_auto/c89597_edc94e4dff234c7cbbcf84b9fbe2413a~mv2.png" alt="Discover sketch" data-caption="Discover section sketch — exploring the feed structure, reactions, and post types before committing to visual design." />
+        <p class="cs-img-caption">Discover section sketch — working through the feed structure, reactions, and post types.</p>
+      </div>
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_6fe5dd795d224cd1ad7b1e53ec63698a~mv2.png/v1/fill/w_572,h_1164,al_c,q_90,enc_avif,quality_auto/c89597_6fe5dd795d224cd1ad7b1e53ec63698a~mv2.png" alt="Discover hi-fi" data-caption="Discover hi-fi: a universal feed with 'Helpful' and 'Me Too' reactions — both chosen based on user testing." />
+        <p class="cs-img-caption">Discover hi-fi: universal feed with "Helpful" and "Me Too" — reactions chosen based on testing.</p>
+      </div>
+    </div>
+
+    <div class="section-subheading read reveal" style="max-width:var(--col-read);margin-left:auto;margin-right:auto;margin-top:40px">Q&amp;A — a dedicated space for questions that need answers</div>
+    <div class="read reveal" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+      <p class="cs-p">The initial design showed one question at a time with swipe-to-skip. Testing showed teachers felt guilty skipping and found the format constraining. We switched to a feed of questions — the same interaction pattern as Discover but filtered for direct questions. This also saved development time through component reuse, which was a welcome bonus for a small startup team.</p>
+    </div>
+    <div class="img-row cols-2 reveal">
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_2d3e28d2fc1e4fc09dd04437dcaa0741~mv2.png/v1/fill/w_408,h_736,al_c,q_90,enc_avif,quality_auto/c89597_2d3e28d2fc1e4fc09dd04437dcaa0741~mv2.png" alt="Q&A sketch" data-caption="Q&A section sketch — the initial one-question-at-a-time format we tested and ultimately moved away from." />
+        <p class="cs-img-caption">Q&amp;A sketch — the initial one-at-a-time format that testing showed didn't work for teachers.</p>
+      </div>
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_5e3376ec908e49bca29caa4981c4e037~mv2.png/v1/fill/w_408,h_736,al_c,q_90,enc_avif,quality_auto/c89597_5e3376ec908e49bca29caa4981c4e037~mv2.png" alt="Q&A hi-fi" data-caption="Q&A hi-fi: a feed of questions teachers can scroll and respond to, using the same components as Discover." />
+        <p class="cs-img-caption">Q&amp;A hi-fi: a questions feed using the same components as Discover — much better for teachers and faster to build.</p>
+      </div>
+    </div>
+
+    <div class="section-subheading read reveal" style="max-width:var(--col-read);margin-left:auto;margin-right:auto;margin-top:40px">Connect — finding teachers like you</div>
+    <div class="read reveal" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+      <p class="cs-p">Originally designed as a list, I redesigned Connect as interactive tiles for four key tasks: Search Members, Direct Messages, Alumni Network, and Impact. When asked "where would you go to find a teacher friend?", every single test participant tapped "Connect" without hesitation — a strong signal that the section and its label were working.</p>
+    </div>
+    <div class="img-row cols-2 reveal">
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_f9bb88bd26c5455a8cfa0d5dab2b0a1d~mv2.png/v1/fill/w_408,h_736,al_c,q_90,enc_avif,quality_auto/c89597_f9bb88bd26c5455a8cfa0d5dab2b0a1d~mv2.png" alt="Connect sketch" data-caption="Connect section sketch — exploring the tile layout and what tasks teachers most needed to find and connect with others." />
+        <p class="cs-img-caption">Connect section sketch — exploring tile layout and the tasks teachers needed to find others.</p>
+      </div>
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_961f1bd3829e484e85950e7602987ee6~mv2.png/v1/fill/w_572,h_1164,al_c,q_90,enc_avif,quality_auto/c89597_961f1bd3829e484e85950e7602987ee6~mv2.png" alt="Connect hi-fi" data-caption="Connect hi-fi: four interactive tiles — Search, Direct Messages, Alumni Network, and Impact." />
+        <p class="cs-img-caption">Connect hi-fi: Search Members, Direct Messages, Alumni Network, and Impact — all from one clear landing point.</p>
+      </div>
+    </div>
+
+    <div class="section-subheading read reveal" style="max-width:var(--col-read);margin-left:auto;margin-right:auto;margin-top:40px">Me — profile and personal settings</div>
+    <div class="read reveal" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+      <p class="cs-p">We kept Me minimal for both development feasibility and usability. Every profile field was validated through testing — we only asked for information teachers were genuinely comfortable sharing in a professional context. Nothing more.</p>
+    </div>
+    <div class="img-row cols-2 reveal">
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_b3a2f95c5e824c288df15c3c0c2c8f4e~mv2.png/v1/fill/w_408,h_736,al_c,q_90,enc_avif,quality_auto/c89597_b3a2f95c5e824c288df15c3c0c2c8f4e~mv2.png" alt="Me sketch" data-caption="Me section sketch — keeping the profile intentionally minimal and testing each field to make sure teachers were comfortable sharing." />
+        <p class="cs-img-caption">Me section sketch — keeping the profile minimal and validating each field through testing.</p>
+      </div>
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_a54249857f6740749c544b989fda088c~mv2.png/v1/fill/w_750,h_1577,al_c,q_90,enc_avif,quality_auto/c89597_a54249857f6740749c544b989fda088c~mv2.png" alt="Me hi-fi" data-caption="Me hi-fi: a clean teacher profile showing only what teachers felt comfortable sharing professionally." />
+        <p class="cs-img-caption">Me hi-fi: a clean profile showing only what teachers were comfortable sharing professionally.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Key Design Decisions</div>
+    <h2 class="section-heading">What testing changed — and what it confirmed</h2>
+    <p class="cs-p">Throughout the six months, every major decision was shaped by what we learned in testing. Some of the most impactful changes:</p>
+    <ul class="cs-ul">
+      <li><strong>Post button placement:</strong> A/B tested multiple locations. Teachers preferred a single "+" button accessible from anywhere in the app — a single entry point combining "Create Post" and "Ask Question."</li>
+      <li><strong>Onboarding:</strong> Tested a chatbot approach, a feelings-based approach, and a simple form. The simple form won — fastest to complete, least friction, and still gave teachers enough confidence to continue.</li>
+      <li><strong>Emotional reactions:</strong> Tested 6+ options. "Helpful" and "Me Too" won decisively — "Hug" and "Handshake" felt too informal for a professional community.</li>
+      <li><strong>Section naming:</strong> Tested "Newsfeed," "News," "Posts," and "Ideas." "Discover" resonated most — it signaled exploration and learning rather than just scrolling.</li>
+    </ul>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_8cf69f01a807445c814ec16b4fb29903~mv2.png/v1/fill/w_1848,h_452,al_c,q_90,enc_avif,quality_auto/c89597_8cf69f01a807445c814ec16b4fb29903~mv2.png" alt="User testing results" data-caption="User testing results across all test sessions — showing which decisions were validated and which needed iteration." />
+      <p class="cs-img-caption">User testing results across all sessions — showing which decisions were validated and which needed iteration.</p>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Result</div>
+    <h2 class="section-heading">App Store launch and a community that kept growing</h2>
+    <p class="cs-p">TeachersConnect launched on the Apple App Store. The launch secured funding and new partnerships with alumni programs, giving the company a stable and recurring revenue stream. Hundreds of teachers from those programs joined immediately — finding a professional community they'd never been able to access before. That was the whole point.</p>
+    <div class="result-grid reveal">
+      <div class="result-item"><div class="result-item-title">App Store launch</div><div class="result-item-body">Successfully shipped the first version to the Apple App Store after six months of sprint-based design</div></div>
+      <div class="result-item"><div class="result-item-title">Funding secured</div><div class="result-item-body">The launch attracted new investors and alumni program partnerships that gave the company stable recurring income</div></div>
+      <div class="result-item"><div class="result-item-title">Hundreds of teachers</div><div class="result-item-body">Teachers from alumni programs joined immediately, finding a professional community they'd never had before</div></div>
+      <div class="result-item"><div class="result-item-title">Foundation for web</div><div class="result-item-body">The mobile-first design became the basis for the web version launched for broader access afterward</div></div>
+    </div>
+  </div>
+
+</div>
+<div class="case-nav"><div class="case-nav-inner"><a href="/case-studies/3d-qa-tool.html">← 3D Model QA Tool</a><a href="/case-studies/smoking-cessation.html">CVS Smoking Cessation →</a></div></div>
+<footer><div class="footer-inner"><div class="footer-logo">Dan Staton</div><div class="footer-links"><a href="mailto:danrstaton@icloud.com">Email</a><a href="http://www.linkedin.com/in/danrstaton" target="_blank" rel="noopener">LinkedIn</a><a href="https://drive.google.com/file/d/1PKAs-82AByGpGAP4KOk0ew4dJBvWjpNv/view?usp=sharing" target="_blank" rel="noopener">Resume</a></div><div class="footer-copy">© 2026 Dan Staton</div></div></footer>
+<script>
+  const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),lbCap=document.getElementById('lb-cap'),lbClose=document.getElementById('lb-close');
+  function openLb(src,cap){lbImg.src=src;lbCap.textContent=cap||'';lb.classList.add('open');document.body.style.overflow='hidden';}
+  function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+  lbClose.addEventListener('click',closeLb);
+  lb.addEventListener('click',e=>{if(e.target===lb)closeLb();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
+  document.querySelectorAll('.cs-img:not(.hero-img),.img-row img').forEach(img=>{
+    img.style.cursor='zoom-in';
+    img.addEventListener('click',()=>{
+      const cap=img.dataset.caption||(img.closest('.cs-img-wrap')?.querySelector('.cs-img-caption')?.textContent)||'';
+      openLb(img.src,cap);
+    });
+  });
+  const ro=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.06,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+</script>
+</body>
+</html>

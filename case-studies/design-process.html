@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Improving Design Process & Product Collaboration — Dan Staton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#F7F4EF;--bg-warm:#EFE9E0;--white:#FFFFFF;--text:#1A1614;--text-mid:#6B6460;--text-light:#9C9490;--accent:#C4673A;--accent-mid:#E8956E;--border:#E0D9D0;--radius:16px;--radius-sm:12px;--col-read:680px;--col-wide:960px;--col-full:1200px}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(247,244,239,0.75);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-bottom:1px solid rgba(255,255,255,0.88);box-shadow:0 1px 0 rgba(255,255,255,0.95) inset,0 4px 24px rgba(0,0,0,0.05)}
+    .nav-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;color:var(--text);text-decoration:none;letter-spacing:-0.02em}
+    .nav-links{display:flex;gap:40px;align-items:center}
+    .nav-links a{font-size:15px;color:var(--text-mid);text-decoration:none;transition:color 0.2s}
+    .nav-links a:hover{color:var(--text)}
+    .nav-cta{background:var(--text)!important;color:var(--bg)!important;padding:9px 20px!important;border-radius:100px;font-size:14px!important;font-weight:500!important;transition:background 0.2s,transform 0.2s!important}
+    .nav-cta:hover{background:var(--accent)!important;color:white!important;transform:translateY(-1px)}
+    .hero-wrap{background:var(--bg);position:relative;overflow:hidden;padding-top:88px}
+    .blob-1{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(196,103,58,0.18) 0%,rgba(196,103,58,0.06) 45%,transparent 70%);top:-120px;right:-80px;border-radius:50%;pointer-events:none}
+    .blob-2{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(232,149,110,0.14) 0%,rgba(232,149,110,0.04) 50%,transparent 70%);bottom:0;left:-80px;border-radius:50%;pointer-events:none}
+    .hero-inner{position:relative;z-index:1;max-width:var(--col-wide);margin:0 auto;padding:0}
+    .hero-image{padding:20px 20px 0;opacity:0;animation:fadeUp 0.6s ease forwards 0.05s}
+    .hero-image img{width:100%;display:block;border-radius:16px}
+    .hero-text{padding:40px 48px 0}
+    .hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;opacity:0;transform:translateY(16px);animation:fadeUp 0.5s ease forwards 0.2s}
+    .meta-chip{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:100px;background:var(--bg-warm);border:1px solid var(--border);color:var(--text-mid)}
+    .meta-chip.accent{background:var(--accent);border-color:var(--accent);color:white}
+    .meta-chip.lead{background:rgba(39,106,44,0.10);border:1px solid rgba(39,106,44,0.15);color:#276A2C}
+    .meta-chip.ux{background:rgba(42,74,122,0.10);border:1px solid rgba(42,74,122,0.15);color:#2A4A7A}
+    .hero-title{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:800;letter-spacing:-0.04em;color:var(--text);line-height:1.0;margin-bottom:24px;opacity:0;transform:translateY(20px);animation:fadeUp 0.6s ease forwards 0.3s}
+    .hero-summary{font-size:18px;color:var(--text-mid);line-height:1.65;max-width:600px;margin-bottom:48px;opacity:0;transform:translateY(16px);animation:fadeUp 0.5s ease forwards 0.4s}
+    .outcomes-strip{background:linear-gradient(155deg,#F3EAE0 0%,#EDE0D2 50%,#F0E8DC 100%);border-bottom:1px solid var(--border)}
+    .outcomes-inner{max-width:var(--col-wide);margin:0 auto;padding:32px 48px}
+    .outcomes-label{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+    .outcomes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .outcome-card{background:rgba(255,255,255,0.60);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,0.88);border-radius:var(--radius-sm);padding:18px 20px;box-shadow:0 1px 0 rgba(255,255,255,0.98) inset,0 4px 16px rgba(0,0,0,0.05)}
+    .outcome-number{font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:5px}
+    .outcome-label{font-size:12px;color:var(--text-mid);line-height:1.4}
+    .cs-body{padding:72px 48px}
+    .read{max-width:var(--col-read);margin:0 auto}
+    .wide{max-width:var(--col-wide);margin:0 auto}
+    .role-card{background:rgba(255,255,255,0.62);backdrop-filter:blur(24px) saturate(170%);-webkit-backdrop-filter:blur(24px) saturate(170%);border:1px solid rgba(255,255,255,0.88);border-radius:var(--radius);padding:28px 32px;box-shadow:0 1px 0 rgba(255,255,255,0.98) inset,0 8px 32px rgba(0,0,0,0.06);display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-bottom:64px}
+    .role-section-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+    .role-title{font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .role-detail{font-size:13px;color:var(--text-mid);line-height:1.55}
+    .cs-section{margin-bottom:72px}
+    .section-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+    .section-heading{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(24px,3vw,34px);font-weight:700;letter-spacing:-0.03em;color:var(--text);line-height:1.15;margin-bottom:20px}
+    .section-subheading{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;color:var(--text);line-height:1.2;margin-bottom:14px;margin-top:40px}
+    .cs-p{font-size:16px;color:var(--text-mid);line-height:1.8;margin-bottom:18px}
+    .cs-ul{margin:0 0 18px 0;padding-left:20px}
+    .cs-ul li{font-size:15px;color:var(--text-mid);line-height:1.7;margin-bottom:6px}
+    .cs-img-wrap{margin:36px 0}
+    .cs-img{width:100%;border-radius:var(--radius-sm);display:block;border:1px solid var(--border);cursor:zoom-in;transition:opacity 0.18s}
+    .cs-img:hover{opacity:0.87}
+    .cs-img.no-border{border:none}
+    .cs-img-caption{font-size:12px;color:var(--text-light);margin-top:10px;line-height:1.5}
+    .img-row{display:grid;gap:16px;margin:36px 0}
+    .img-row.cols-2{grid-template-columns:1fr 1fr}
+    .img-row.cols-3{grid-template-columns:1fr 1fr 1fr}
+    .img-row.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+    .img-row img{width:100%;border-radius:var(--radius-sm);display:block;border:1px solid var(--border);cursor:zoom-in;transition:opacity 0.18s}
+    .img-row img:hover{opacity:0.87}
+    .callout{background:rgba(255,255,255,0.60);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid rgba(255,255,255,0.88);border-radius:var(--radius-sm);padding:24px 28px;box-shadow:0 1px 0 rgba(255,255,255,0.98) inset,0 4px 16px rgba(0,0,0,0.05);margin:28px 0}
+    .callout-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+    .callout-text{font-size:15px;color:var(--text);line-height:1.65}
+    .insight-list{list-style:none;padding:0;margin:18px 0}
+    .insight-list li{font-size:14px;color:var(--text-mid);line-height:1.65;padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+    .insight-list li:last-child{border-bottom:none}
+    .insight-list li::before{content:'→';color:var(--accent);font-size:13px;flex-shrink:0;margin-top:2px}
+    .example-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:24px 26px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,0.05)}
+    .example-num{font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+    .example-title{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.02em;color:var(--text);margin-bottom:10px}
+    .example-body{font-size:14px;color:var(--text-mid);line-height:1.65}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:28px 0}
+    .result-item{background:var(--bg-warm);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 20px}
+    .result-item-title{font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .result-item-body{font-size:13px;color:var(--text-mid);line-height:1.5}
+    .quote-block{border-left:3px solid var(--accent);padding:14px 20px;margin:20px 0;background:var(--bg-warm);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+    .quote-text{font-size:15px;color:var(--text);line-height:1.7;font-style:italic;margin-bottom:6px}
+    .quote-attr{font-size:12px;color:var(--text-mid);font-weight:600}
+    .quote-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px 0}
+    .quote-bubble{background:var(--bg-warm);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;font-size:14px;color:var(--text-mid);font-style:italic;line-height:1.6}
+    .process-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:28px 0}
+    .process-step{background:var(--bg-warm);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 14px;text-align:center}
+    .process-step-num{font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:var(--accent);margin-bottom:6px}
+    .process-step-label{font-size:12px;color:var(--text-mid);line-height:1.4;font-weight:500}
+    .process-flow{display:flex;gap:0;margin:28px 0;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+    .pf-step{flex:1;padding:16px 12px;text-align:center;background:var(--white);border-right:1px solid var(--border);font-size:12px;color:var(--text-mid);font-weight:500}
+    .pf-step:last-child{border-right:none}
+    .pf-num{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;color:var(--accent);display:block;margin-bottom:4px}
+    .heuristic-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:28px 0}
+    .heuristic-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+    .heuristic-title{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
+    .heuristic-body{font-size:13px;color:var(--text-mid);line-height:1.6}
+    .persona-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+    .persona-card img{width:100%;display:block;border-radius:var(--radius-sm);border:1px solid var(--border)}
+    .tl-steps{position:relative}
+    .tl-steps::before{content:'';position:absolute;left:20px;top:8px;bottom:8px;width:1.5px;background:var(--border)}
+    .tl-step{position:relative;padding-left:56px;margin-bottom:44px}
+    .tl-step:last-child{margin-bottom:0}
+    .tl-dot{position:absolute;left:12px;top:6px;width:17px;height:17px;border-radius:50%;background:var(--white);border:2.5px solid var(--border);z-index:1}
+    .tl-step.active .tl-dot{border-color:var(--accent);background:var(--accent)}
+    .tl-time{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+    .tl-step-title{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.02em;color:var(--text);margin-bottom:10px}
+    .cs-divider{border:none;border-top:1px solid var(--border);margin:64px 0}
+    .award-band{background:linear-gradient(135deg,#1A1614 0%,#2A1E18 100%);padding:48px;border-radius:var(--radius);margin:48px 0;text-align:center}
+    .award-band-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-mid);margin-bottom:12px}
+    .award-band-title{font-family:'Bricolage Grotesque',sans-serif;font-size:32px;font-weight:800;letter-spacing:-0.03em;color:white;margin-bottom:12px}
+    .award-band-body{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.65;max-width:560px;margin:0 auto}
+    .case-nav{background:var(--bg-warm);border-top:1px solid var(--border)}
+    .case-nav-inner{max-width:var(--col-full);margin:0 auto;padding:32px 48px;display:flex;justify-content:space-between;align-items:center}
+    .case-nav a{font-size:15px;font-weight:500;color:var(--text-mid);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:color 0.2s}
+    .case-nav a:hover{color:var(--accent)}
+    footer{background:var(--text);padding:40px 48px}
+    .footer-inner{max-width:var(--col-full);margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+    .footer-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;color:white;letter-spacing:-0.02em}
+    .footer-links{display:flex;gap:28px}
+    .footer-links a{font-size:14px;color:rgba(255,255,255,0.38);text-decoration:none;transition:color 0.2s}
+    .footer-links a:hover{color:white}
+    .footer-copy{font-size:13px;color:rgba(255,255,255,0.22)}
+    .lb-overlay{position:fixed;inset:0;background:rgba(10,8,7,0.88);z-index:9000;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity 0.25s ease;pointer-events:none}
+    .lb-overlay.open{opacity:1;pointer-events:all}
+    .lb-inner{max-width:92vw;max-height:92vh;display:flex;flex-direction:column;align-items:center;gap:14px}
+    .lb-img{max-width:100%;max-height:80vh;border-radius:12px;object-fit:contain;box-shadow:0 24px 80px rgba(0,0,0,0.5)}
+    .lb-caption{font-size:13px;color:rgba(255,255,255,0.65);text-align:center;max-width:640px;line-height:1.55}
+    .lb-close{position:fixed;top:20px;right:20px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;z-index:9001}
+    .lb-close:hover{background:rgba(255,255,255,0.22)}
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    @media(max-width:1024px){nav{padding:18px 32px}.hero-text{padding:32px 32px 0}.outcomes-inner{padding:28px 32px}.outcomes-grid{grid-template-columns:1fr 1fr}.cs-body{padding:56px 32px}.role-card{grid-template-columns:1fr 1fr}.heuristic-grid{grid-template-columns:1fr}.process-steps{grid-template-columns:repeat(3,1fr)}.case-nav-inner{padding:28px 32px}footer{padding:36px 32px}}
+    @media(max-width:768px){nav{padding:16px 24px}.nav-links{gap:20px}.hero-image{padding:12px 12px 0}.hero-text{padding:28px 24px 0}.outcomes-inner{padding:24px}.outcomes-grid{grid-template-columns:1fr 1fr}.cs-body{padding:48px 24px}.role-card{grid-template-columns:1fr;gap:16px}.img-row.cols-2,.img-row.cols-3,.img-row.cols-4{grid-template-columns:1fr 1fr}.result-grid,.quote-row,.persona-grid,.heuristic-grid{grid-template-columns:1fr}.process-steps{grid-template-columns:1fr 1fr}.process-flow{flex-direction:column}.pf-step{border-right:none;border-bottom:1px solid var(--border)}.pf-step:last-child{border-bottom:none}.case-nav-inner{padding:24px;flex-direction:column;gap:16px;text-align:center}footer{padding:32px 24px}.footer-inner{flex-direction:column;gap:20px;text-align:center}}
+    @media(max-width:520px){.nav-text-link{display:none}.img-row.cols-2,.img-row.cols-3,.img-row.cols-4{grid-template-columns:1fr}}
+
+
+  </style>
+</head>
+<body>
+<nav><a href="/index.html" class="nav-logo">Dan Staton</a><div class="nav-links"><a href="/index.html" class="nav-text-link">← All work</a><a href="/about.html" class="nav-text-link">About</a><a href="mailto:danrstaton@icloud.com" class="nav-cta">Get in touch</a></div></nav>
+<div class="lb-overlay" id="lb"><div class="lb-inner"><img class="lb-img" id="lb-img" src="" alt="" /><p class="lb-caption" id="lb-cap"></p></div><button class="lb-close" id="lb-close" aria-label="Close">✕</button></div>
+<div class="hero-wrap"><div class="blob-1"></div><div class="blob-2"></div>
+  <div class="hero-inner">
+    <div class="hero-image"><img src="https://static.wixstatic.com/media/c89597_a66afa9e61a4415780773edbac8ac106~mv2.png/v1/fill/w_1920,h_680,al_c,q_90,enc_avif,quality_auto/Collaboration%20Process%20with%20Product-1.png" alt="Improving Design Process" /></div>
+    <div class="hero-text">
+      <div class="hero-meta"><span class="meta-chip lead">Leadership</span><span class="meta-chip">CVS Health</span><span class="meta-chip">June 2023</span><span class="meta-chip">Sr. Experience Design Manager</span></div>
+      <h1 class="hero-title">Improving Design Process &amp; Product Collaboration</h1>
+      <p class="hero-summary">Interviewing both Product and Design to find the real friction points, then co-creating a new working agreement that cut delivery time by 35% and won a CVS Excellence Award.</p>
+    </div>
+  </div>
+</div>
+<div class="outcomes-strip"><div class="outcomes-inner reveal">
+  <div class="outcomes-label">Outcomes</div>
+  <div class="outcomes-grid">
+    <div class="outcome-card"><div class="outcome-number">35%</div><div class="outcome-label">Fewer sprints needed to deliver features</div></div>
+    <div class="outcome-card"><div class="outcome-number">20%</div><div class="outcome-label">Fewer design stories needed per feature</div></div>
+    <div class="outcome-card"><div class="outcome-number">81→90%</div><div class="outcome-label">Visit Manager conversion rate increase</div></div>
+    <div class="outcome-card"><div class="outcome-number">🏆</div><div class="outcome-label">CVS Excellence Award, Summer 2023</div></div>
+  </div>
+</div></div>
+<div class="cs-body">
+
+  <div class="wide reveal">
+    <div class="role-card">
+      <div><div class="role-section-label">My Role</div><div class="role-title">Sr. Experience Design Manager</div><div class="role-detail">I co-led this initiative equally with Jordan Williams. I conducted 1:1 interviews with Product team members, facilitated the design team listening workshop, synthesized findings, developed recommendations, and presented to Design and Product leadership for approval before working with the full team on a new working agreement.</div></div>
+      <div><div class="role-section-label">Partners</div><div class="role-title">Jordan Williams and Product</div><div class="role-detail">Jordan Williams (Sr. Design Lead, co-lead on all parts of this project). Interviews with five Product Managers, one Product Director, and one Executive Product Director. Design Director Ethan and Product Director Aviel aligned on goals before we began.</div></div>
+      <div><div class="role-section-label">Skills</div><div class="role-title">Process plus Change Management</div><div class="role-detail">Process Improvement, Stakeholder Interviews, Affinity Mapping, Change Communication, Working Agreements, Workshop Facilitation</div></div>
+    </div>
+  </div>
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">The Problem</div>
+    <h2 class="section-heading">A new model with no guidance on how to make it work</h2>
+    <p class="cs-p">CVS's design org shifted from a "consulting" model where Design and Product worked separately, to an "embedded" model where designers joined individual Product teams. It was the right direction — but there was very little guidance on how to actually collaborate in this new structure.</p>
+    <p class="cs-p">Pain points surfaced quickly: ambiguous feature requirements because Design wasn't included in planning, repeated feedback loops because Product only saw work late in the process, and growing frustration on both sides even though the relationships were genuinely strong. We knew we could fix this if we approached it the right way.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="cs-img-wrap">
+      <img class="cs-img no-border" src="https://static.wixstatic.com/media/c89597_1bf13658c83847b8b25d82cea39659e7~mv2.png/v1/fill/w_1886,h_474,al_c,q_90,enc_avif,quality_auto/Old%20process.png" alt="Old process" data-caption="Old process: Design and Product working in separate lanes, causing late-stage feedback loops and misaligned expectations." />
+      <p class="cs-img-caption">Old process: Design and Product working in separate lanes, causing late-stage feedback and misaligned expectations.</p>
+    </div>
+    <div class="cs-img-wrap">
+      <img class="cs-img no-border" src="https://static.wixstatic.com/media/c89597_cea408457649413ca062c65bc6ba5bd6~mv2.png/v1/fill/w_1886,h_558,al_c,q_90,enc_avif,quality_auto/New%20process.png" alt="New process" data-caption="New process: collaborative checkpoints throughout, so Product gives feedback early and Design gets clearer requirements from the start." />
+      <p class="cs-img-caption">New process: collaborative checkpoints throughout, getting Product involved early and Design informed from the start.</p>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Our Strategy</div>
+    <h2 class="section-heading">Getting both sides to the same table</h2>
+    <p class="cs-p">Jordan and I set up a meeting with our Design Director (Ethan) and Product Director (Aviel) to align on what we were trying to fix. We agreed on three goals: identify the pain points everyone was experiencing in the new model, understand what an ideal collaboration process looked like from both sides, and put together a working agreement that would clarify a new process with clear roles and responsibilities.</p>
+    <p class="cs-p">Our strategy for getting there had five steps: 1:1 interviews with each Product team member to understand their perspective, a design team "listening" workshop to hear from our designers, analysis of the feedback from both groups, a set of recommendations for each step in the process, and finally a working agreement created together with the full team.</p>
+    <div class="cs-img-wrap" style="max-width:600px;margin:36px auto">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_e3caf8e82c954748b35908d413e8020a~mv2.png/v1/fill/w_1432,h_1034,al_c,q_90,enc_avif,quality_auto/Strategy_heic.png" alt="Strategy diagram" data-caption="Our strategy for understanding both sides and arriving at a shared working agreement." />
+      <p class="cs-img-caption">Our strategy for understanding both sides and arriving at a shared working agreement.</p>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Research</div>
+    <h2 class="section-heading">Interviewing both sides of the table</h2>
+    <p class="cs-p">Jordan and I conducted 1:1 interviews with seven Product team members and facilitated a listening workshop with the full design team. Four questions guided every conversation: How do you define "high-quality design"? Efficient timing? Being "involved" in the process? And what does the ideal collaboration look like to you?</p>
+    <p class="cs-p">We traded off interviewer and notetaker roles in every session. The design team workshop was specifically framed as a "listening" session — a signal that this was about hearing concerns openly, not defending the current state.</p>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_8b27ad037e504656ae151a532a27c080~mv2.png/v1/fill/w_1856,h_1294,al_c,q_90,enc_avif,quality_auto/Aviel's%20feedback_heic.png" alt="Product director interview feedback" data-caption="Notes from our Product Director interview — capturing their definition of quality, efficient timing, and ideal collaboration." />
+      <p class="cs-img-caption">Notes from our Product Director interview — capturing their definition of quality, timing, and ideal collaboration.</p>
+    </div>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_949b5a6df99b4ce798ed93e9ec4a6e44~mv2.png/v1/fill/w_1856,h_1052,al_c,q_90,enc_avif,quality_auto/Synthesis%20of%20interview%20feedback_heic.png" alt="Synthesis of interview feedback" data-caption="Affinity mapping and synthesis — grouping themes from Product and Design interviews to identify patterns." />
+      <p class="cs-img-caption">Affinity mapping synthesis — grouping themes from both sides to find patterns and common ground.</p>
+    </div>
+    <div class="img-row cols-2 reveal">
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_66a1483868584f5687676f946738956b~mv2.png/v1/fill/w_1540,h_868,al_c,q_90,enc_avif,quality_auto/Design%20team%20feedback_heic.png" alt="Design team feedback" data-caption="Design team listening workshop output — what the team wanted and didn't want from Product at each stage of the process." />
+        <p class="cs-img-caption">Design team listening workshop — what they wanted and didn't want from Product at each stage.</p>
+      </div>
+      <div>
+        <img src="https://static.wixstatic.com/media/c89597_1618e36f8746424da2d4dfeaaab73d40~mv2.png/v1/fill/w_1200,h_668,al_c,q_90,enc_avif,quality_auto/Efficient%20timing_heic.png" alt="Efficient timing themes" data-caption="Synthesized themes on what 'efficient timing' meant to both Product and Design." />
+        <p class="cs-img-caption">Synthesized themes on what "efficient timing" meant to both sides.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">The New Process</div>
+    <h2 class="section-heading">New checkpoints and a working agreement built together</h2>
+    <p class="cs-p">Based on our synthesis, Jordan and I proposed new checkpoints throughout the design process — bringing Product in earlier and more consistently, rather than only at the end:</p>
+    <ul class="cs-ul">
+      <li><strong>UXR review</strong> — Product sees research before writing features, so they understand the user context behind the work</li>
+      <li><strong>Feature intro and refinement</strong> — Design gets clear, specific requirements from the start instead of discovering gaps later</li>
+      <li><strong>Strategy align</strong> — Early design thinking shared before committing to a direction</li>
+      <li><strong>Lo-fi review</strong> — Wireframe feedback before high-fidelity investment, catching misalignments early</li>
+      <li><strong>Hi-fi review</strong> — Final approval before development handoff</li>
+    </ul>
+    <p class="cs-p">We presented these recommendations to Design and Product leadership, refined based on their feedback, then ran a workshop with the full team to co-create the roles and responsibilities for each checkpoint. The final working agreement was published in Confluence and became our new standard.</p>
+    <div class="cs-img-wrap">
+      <img class="cs-img no-border" src="https://static.wixstatic.com/media/c89597_20285685cf85440e80548165422f4454~mv2.png/v1/fill/w_1856,h_1064,al_c,q_90,enc_avif,quality_auto/Zoom%20on%20final%20new%20process_heic.png" alt="Final new process" data-caption="The finalized design and collaboration process — with clear checkpoints and role ownership at each stage." />
+      <p class="cs-img-caption">The finalized process — clear checkpoints, clear ownership, and no more late-stage surprises.</p>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Success Stories</div>
+    <h2 class="section-heading">What the new process made possible</h2>
+
+    <div class="section-subheading">Sports Intake form — faster stakeholder approval</div>
+    <p class="cs-p">When designing a new "Sports physical" health form for students, our new "Strategy align" checkpoint let us share early design thinking with Product. Product then brought this thinking directly into Legal review — which meant we got Legal approval on design concepts much earlier than usual, saving the whole team significant time.</p>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_cd33c1d6159543d5b96ededc3437467e~mv2.png/v1/fill/w_1856,h_608,al_c,q_90,enc_avif,quality_auto/Sports%20intake%20success_heic.png" alt="Sports intake success" data-caption="Sports Intake form: early Strategy Align checkpoint led to faster Legal approval and smoother delivery." />
+      <p class="cs-img-caption">Sports Intake: our Strategy Align checkpoint led to faster Legal approval and a smoother process overall.</p>
+    </div>
+
+    <div class="section-subheading">Sports Notice of Self-Pay — fewer feedback loops</div>
+    <p class="cs-p">Our new "Lo-fi review" checkpoint let Product see early options and give feedback before we invested in high-fidelity work. For the Sports Notice of Self-Pay, we walked through multiple options for parent/guardian consent at the wireframe stage — and didn't have to go back and do costly rework later.</p>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_f97d262ed5184737b3012aa077f32653~mv2.png/v1/fill/w_1856,h_794,al_c,q_90,enc_avif,quality_auto/Sports%20notice%20of%20self%20pay%20success_heic.png" alt="Sports notice success" data-caption="Sports Notice of Self-Pay: Lo-fi review caught potential issues early, eliminating rework later in the process." />
+      <p class="cs-img-caption">Sports Notice of Self-Pay: Lo-fi review eliminated the rework that would have happened later.</p>
+    </div>
+
+    <div class="section-subheading">Next Gen Visit Manager — Product in research from the start</div>
+    <p class="cs-p">Sharing research during our new "UXR review" checkpoint gave Product the context of real user pain points that they otherwise wouldn't have seen until much later. This opened the door to much deeper explorations of how we could simplify the patient check-in experience.</p>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_80bba4c0d19e44f68971ce51367bedf2~mv2.png/v1/fill/w_1856,h_774,al_c,q_90,enc_avif,quality_auto/Next%20Gen%20VM%20success_heic.png" alt="Next Gen VM success" data-caption="Next Gen Visit Manager: UXR review gave Product critical context they hadn't seen before, unlocking deeper explorations." />
+      <p class="cs-img-caption">Next Gen Visit Manager: UXR review gave Product the context to think bigger about the check-in experience.</p>
+    </div>
+
+    <div class="section-subheading">In-Clinic Tablet — clearer requirements for a tight deadline</div>
+    <p class="cs-p">When an urgent feature needed to be completed in one sprint, our "Feature Intro" and "Strategy Align" checkpoints ensured Design understood the "why" behind the business request from day one. This made our communication smoother and our designs more on-target from the very beginning.</p>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_fb7252f872dd415aa2fcc62ab651109c~mv2.png/v1/fill/w_1856,h_774,al_c,q_90,enc_avif,quality_auto/In-Clinic%20Tablet%20success_heic.png" alt="In-Clinic Tablet success" data-caption="In-Clinic Tablet: Feature Intro and Strategy Align checkpoints made a one-sprint turnaround feel smooth instead of chaotic." />
+      <p class="cs-img-caption">In-Clinic Tablet: new checkpoints made a one-sprint turnaround feel smooth instead of chaotic.</p>
+    </div>
+
+    <div class="section-subheading">Check-in SMS — a content decision made in 30 minutes</div>
+    <p class="cs-p">In the old process, updating a single line of content might have required multiple Rally stories and multiple rounds of reviews. With our new "Feature intro" checkpoint, Jordan set up a 30-minute brainstorm, and we made the decision with Product in a Teams chat within an hour. The new process freed us to move at the speed the work actually required.</p>
+    <div class="cs-img-wrap">
+      <img class="cs-img" src="https://static.wixstatic.com/media/c89597_12b054ed1c074764adfec8123c365092~mv2.png/v1/fill/w_1856,h_794,al_c,q_90,enc_avif,quality_auto/Check-in%20SMS_heic.png" alt="Check-in SMS success" data-caption="Check-in SMS: a content decision that would have taken days now took 30 minutes." />
+      <p class="cs-img-caption">Check-in SMS: a content decision that would have taken days in the old process took 30 minutes in the new one.</p>
+    </div>
+  </div>
+
+  <hr class="cs-divider read" style="max-width:var(--col-read);margin-left:auto;margin-right:auto">
+
+  <div class="cs-section read reveal">
+    <div class="section-eyebrow">Impact</div>
+    <h2 class="section-heading">Results the team felt right away</h2>
+    <p class="cs-p">Both Design and Product noticed the difference immediately. Here's what Product leadership shared with us directly:</p>
+    <div class="quote-row">
+      <div class="quote-bubble">"I love the real time collaboration and iteration."</div>
+      <div class="quote-bubble">"You're too fast! From insight to solution in under 4 hours. Who has time for a user story?!"</div>
+      <div class="quote-bubble">"Omg that turnaround time."</div>
+      <div class="quote-bubble">"Trust among all team members increased and our frustration in the process was now gone."</div>
+    </div>
+    <div class="result-grid reveal">
+      <div class="result-item"><div class="result-item-title">35% fewer sprints</div><div class="result-item-body">Features delivered in one fewer sprint on average due to clearer requirements and fewer feedback loops</div></div>
+      <div class="result-item"><div class="result-item-title">20% fewer stories</div><div class="result-item-body">Designers estimated work more accurately when requirements were clear from the start</div></div>
+      <div class="result-item"><div class="result-item-title">90% conversion rate</div><div class="result-item-body">Visit Manager increased from 81% to 90% through faster iteration enabled by the new process</div></div>
+      <div class="result-item"><div class="result-item-title">Happier team</div><div class="result-item-body">Both Design and Product happiness scores improved after the new process took effect</div></div>
+    </div>
+  </div>
+
+  <div class="wide reveal">
+    <div class="award-band">
+      <div class="award-band-eyebrow">CVS Excellence Award, Summer 2023</div>
+      <div class="award-band-title">Recognized for large-scale team and business impact</div>
+      <div class="award-band-body">Design Director Ethan Maehl nominated Jordan and me for the CVS Excellence Award for these changes. The award is given to colleagues who "demonstrate a deep commitment to CVS behaviors, evidenced by a successful idea, action, or recent accomplishment that has a large impact on CVS teams, the business, or customers." We were honored to win it that summer.</div>
+    </div>
+  </div>
+
+</div>
+<div class="case-nav"><div class="case-nav-inner"><a href="/case-studies/new-design-team.html">← New Design Team</a><a href="/case-studies/student-coop.html">Student Co-op →</a></div></div>
+<footer><div class="footer-inner"><div class="footer-logo">Dan Staton</div><div class="footer-links"><a href="mailto:danrstaton@icloud.com">Email</a><a href="http://www.linkedin.com/in/danrstaton" target="_blank" rel="noopener">LinkedIn</a><a href="https://drive.google.com/file/d/1PKAs-82AByGpGAP4KOk0ew4dJBvWjpNv/view?usp=sharing" target="_blank" rel="noopener">Resume</a></div><div class="footer-copy">© 2026 Dan Staton</div></div></footer>
+<script>
+  const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),lbCap=document.getElementById('lb-cap'),lbClose=document.getElementById('lb-close');
+  function openLb(src,cap){lbImg.src=src;lbCap.textContent=cap||'';lb.classList.add('open');document.body.style.overflow='hidden';}
+  function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+  lbClose.addEventListener('click',closeLb);
+  lb.addEventListener('click',e=>{if(e.target===lb)closeLb();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
+  document.querySelectorAll('.cs-img:not(.hero-img),.img-row img').forEach(img=>{
+    img.style.cursor='zoom-in';
+    img.addEventListener('click',()=>{
+      const cap=img.dataset.caption||(img.closest('.cs-img-wrap')?.querySelector('.cs-img-caption')?.textContent)||'';
+      openLb(img.src,cap);
+    });
+  });
+  const ro=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.06,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+</script>
+</body>
+</html>
