@@ -203,18 +203,20 @@
       border-bottom: 1px solid var(--border);
     }
     .awards-inner {
-      max-width:var(--max-w); margin:0 auto; padding:20px 48px;
-      display:flex; align-items:center; gap:40px; flex-wrap:wrap;
+      max-width:var(--max-w); margin:0 auto; padding:26px 48px;
+      display:grid; grid-template-columns:repeat(3,1fr);
     }
     .award-item {
-      display:flex; align-items:center; gap:10px;
-      font-size:13px; color:var(--text-mid);
+      display:flex; flex-direction:column; gap:5px;
+      padding:2px 36px; border-left:1px solid var(--border);
     }
-    .award-icon { font-size:16px; }
-    .award-text strong { color:var(--text); font-weight:600; }
-    .award-divider {
-      width:1px; height:20px; background:var(--border); flex-shrink:0;
+    .award-item:first-child { border-left:none; padding-left:0; }
+    .award-year { font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); }
+    .award-name {
+      font-family:'Bricolage Grotesque',sans-serif; font-size:15px; font-weight:700;
+      letter-spacing:-0.01em; color:var(--text); line-height:1.25;
     }
+    .award-desc { font-size:13px; color:var(--text-mid); line-height:1.45; }
 
     /* ─── SECTION SHELLS ──────────────────────────── */
     .section-bg-featured {
@@ -374,7 +376,8 @@
       footer { padding:32px 24px; }
       .footer-inner { flex-direction:column; gap:20px; text-align:center; }
       .featured-grid, .cards-grid { grid-template-columns:1fr 1fr; }
-      .award-divider { display:none; }
+      .awards-inner { grid-template-columns:1fr; gap:20px; }
+      .award-item { border-left:none; padding:0; }
     }
     @media (max-width:520px) {
       .hero { padding:100px 24px 0; }
@@ -439,18 +442,19 @@
 <div class="awards-strip reveal">
   <div class="awards-inner">
     <div class="award-item">
-      <span class="award-icon">🏆</span>
-      <span class="award-text"><strong>CVS Annual Vibrancy Award</strong> — Exceptional leadership &amp; design delivery, Dec 2025</span>
+      <span class="award-year">Dec 2025</span>
+      <span class="award-name">CVS Annual Vibrancy Award</span>
+      <span class="award-desc">Exceptional leadership &amp; design delivery</span>
     </div>
-    <div class="award-divider"></div>
     <div class="award-item">
-      <span class="award-icon">⭐</span>
-      <span class="award-text"><strong>100% Trust Rating</strong> — Rated by all direct reports, CVS Management Survey 2024</span>
+      <span class="award-year">2024</span>
+      <span class="award-name">100% Trust Rating</span>
+      <span class="award-desc">Rated by all direct reports, CVS Management Survey</span>
     </div>
-    <div class="award-divider"></div>
     <div class="award-item">
-      <span class="award-icon">🎖️</span>
-      <span class="award-text"><strong>CVS Excellence Award</strong> — New process reduced design delivery time, Sep 2023</span>
+      <span class="award-year">Sep 2023</span>
+      <span class="award-name">CVS Excellence Award</span>
+      <span class="award-desc">New process reduced design delivery time</span>
     </div>
   </div>
 </div>
@@ -468,7 +472,7 @@
 
       <a href="/case-studies/health100.html" class="feat-card reveal">
         <div class="feat-image" style="background:linear-gradient(135deg,#EDE0D2 0%,#D4C4B0 100%); display:flex; align-items:center; justify-content:center;">
-          <span style="font-size:52px; opacity:0.5;">🏥</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif; font-size:24px; font-weight:700; letter-spacing:-0.01em; color:var(--text-mid); opacity:0.7;">Coming soon</span>
         </div>
         <div class="feat-body">
           <div class="feat-company">CVS Health · 2025</div>
